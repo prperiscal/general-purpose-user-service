@@ -1,0 +1,25 @@
+server:
+  port: 8090
+  tomcat:
+    uri-encoding: UTF-8
+  compression:
+    enabled: true
+    mime-types: application/json, application/xml
+spring:
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/postgres
+    username: postgres
+    password: pass
+  jpa:
+    hibernate:
+      ddl-auto: validate
+      use-new-id-generator-mappings: true
+    properties:
+      hibernate:
+        default_schema: user_service
+        temp:
+          use_jdbc_metadata_defaults: false #https://stackoverflow.com/questions/43905119/postgres-error-method-org-postgresql-jdbc-pgconnection-createclob-is-not-imple
+  flyway: #Flyway configuration keys were moved to the spring namespace - https://github.com/spring-projects/spring-boot/wiki/Spring-Boot-2.0-Migration-Guide
+    schemas: user_service
+    table: flyway_schema_version
