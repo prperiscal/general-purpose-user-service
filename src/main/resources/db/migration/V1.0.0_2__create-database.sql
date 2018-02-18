@@ -1,19 +1,19 @@
 CREATE TABLE user_service."user" (
    tid           int8 NOT NULL,
-   id            varchar (40) NOT NULL,
+   id            uuid NOT NULL,
    email         varchar (255) NOT NULL,
    name          varchar (255) NOT NULL,
    password      varchar (255) NOT NULL,
    role          varchar (127) NOT NULL,
-   tenant_id     varchar (40) NOT NULL,
+   tenant_id     uuid NOT NULL,
    PRIMARY KEY (tid)
 );
 
 CREATE TABLE user_service.user_group (
    tid         int8 NOT NULL,
-   id          varchar (40) NOT NULL,
+   id          uuid NOT NULL,
    name        varchar (127) NOT NULL,
-   tenant_id   varchar (40) NOT NULL,
+   tenant_id   uuid NOT NULL,
    PRIMARY KEY (tid)
 );
 
