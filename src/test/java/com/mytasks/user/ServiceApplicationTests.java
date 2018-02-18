@@ -1,4 +1,4 @@
-package com.mytasks.flywayservice;
+package com.mytasks.user;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
