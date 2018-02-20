@@ -1,5 +1,6 @@
 package com.mytasks.user.service;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -8,14 +9,16 @@ import com.mytasks.user.exception.UserNotFoundException;
 import com.mytasks.user.facility.ConverterFacility;
 import com.mytasks.user.model.User;
 import com.mytasks.user.repository.UserRepository;
+import com.mytasks.user.repository.specification.UserByPreviousUser;
+import com.mytasks.user.repository.specification.UserByTenantIdAndUserGroupName;
 import com.mytasks.user.rest.input.UserInsert;
 import com.mytasks.user.rest.input.UserUpdate;
-import com.prperiscal.resolver.projection.base.Projection;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -57,12 +60,34 @@ public class UserService {
     }
 
     /**
+     * <p>Retrieves {@link User} if exits any with the same email as the user given but concatenating "2".
+     *
+     * @param tenantId {@link UUID} tenant
+     * @param userId   {@link UUID} user
+     *
+     * @return {@link User}
+     * @throws UserNotFoundException    if {@link User} not found
+     * @throws NullPointerException     if argument is {@code null}
+     * @throws IllegalArgumentException if argument is {@code null}
+     * @throws DataAccessException      if database access fails
+     * @since 1.0.0
+     */
+    @Transactional(readOnly = true)
+    public List<User> findNextEmail(UUID tenantId, UUID userId) {
+        Validate.notNull(tenantId, "tenantId");
+        Validate.notNull(userId, "userId");
+
+        Specification<User> specification = new UserByPreviousUser(tenantId, userId);
+        return userRepository.findAll(specification);
+    }
+
+    /**
      * <p>Retrieves {@link User} with the given email.
      *
      * @param email    user email
      * @param pageable page parameters
      *
-     * @return {@link Page<Projection>} with the users
+     * @return {@link Page<User>} with the users
      * @throws IllegalArgumentException if email or pageable is {@code null}
      * @throws DataAccessException      if database access fails
      * @since 1.0.0
@@ -150,6 +175,27 @@ public class UserService {
         Optional.ofNullable(userUpdate.getEmail()).ifPresent(user::setEmail);
         Optional.ofNullable(userUpdate.getRole()).ifPresent(user::setRole);
         return userRepository.save(user);
+    }
+
+    /**
+     * @param tenantId      {@link UUID} of tenant
+     * @param userGroupName {@link String} name of userGroup
+     * @param pageable      page parameters
+     *
+     * @return {@link Page<User>} with the users
+     * @throws IllegalArgumentException if argument is not {@code null} but blank
+     * @throws DataAccessException      if database access fails
+     * @since 1.0.0
+     */
+    @Transactional(readOnly = true)
+    public Page<User> findByUserGroup(UUID tenantId, String userGroupName, Pageable pageable) {
+        Validate.notNull(tenantId, "tenantId");
+        Validate.notNull(userGroupName, "userGroupName");
+        Validate.notNull(pageable, "pageable");
+
+        Specification<User> specification = new UserByTenantIdAndUserGroupName(tenantId, userGroupName);
+
+        return userRepository.findAll(specification, pageable);
     }
 
 }

@@ -59,9 +59,28 @@ public class UserCtrl implements UserBinding {
      * @since 1.0.0
      */
     @RequestMapping(method = GET, path = FIND_ONE_PATH, produces = APPLICATION_JSON_UTF8_VALUE)
-    public Projection findOne(@PathVariable UUID tenantId, @PathVariable UUID userId,
-                              @RequestParam(name = PROJECTION_NAME_PARAM, required = false) String projectionName) {
+    public Projection findOne(@PathVariable UUID tenantId, @PathVariable UUID userId, @RequestParam(name = PROJECTION_NAME_PARAM, required = false) String projectionName) {
         return Optional.ofNullable(userFacade.findOne(tenantId, userId, projectionName))
+                       .orElseThrow(() -> new UserNotFoundException(tenantId.toString(), userId.toString()));
+    }
+
+    /**
+     * <p>Retrieves {@link User} if exits any with the same email as the user given but concatenating "2".
+     *
+     * @param tenantId       {@link UUID} of tenant
+     * @param userId         {@link UUID} of user
+     * @param projectionName the name of the projection the {@link User} shall be converted to
+     *
+     * @return The requested {@link Projection} for the user
+     * @throws UserNotFoundException    if {@link User} has not being found
+     * @throws DataAccessException      if database access fails
+     * @throws IllegalArgumentException if any parameter is invalid, like unmatched uuid format for ids
+     * @since 1.0.0
+     */
+    @RequestMapping(method = GET, path = FIND_BY_EMAIL_DOMAIN_PATH, produces = APPLICATION_JSON_UTF8_VALUE)
+    public Projection findNextEmail(@PathVariable UUID tenantId, @PathVariable UUID userId,
+                                    @RequestParam(name = PROJECTION_NAME_PARAM, required = false) String projectionName) {
+        return Optional.ofNullable(userFacade.findNextEmail(tenantId, userId, projectionName))
                        .orElseThrow(() -> new UserNotFoundException(tenantId.toString(), userId.toString()));
     }
 
@@ -141,5 +160,25 @@ public class UserCtrl implements UserBinding {
                              @RequestBody @Valid UserUpdate userUpdate,
                              @RequestParam(name = PROJECTION_NAME_PARAM, required = false) String projectionName) {
         return userFacade.update(tenantId, userId, userUpdate, projectionName);
+    }
+
+    /**
+     * <p>Find {@link User} by group name.
+     *
+     * @param tenantId       {@link UUID} of tenant id
+     * @param groupName      {@link UUID} of user
+     * @param projectionName the name of the projection the {@link User} shall be converted to
+     *
+     * @return {@link User} updated with Status 201
+     * @throws IllegalArgumentException if argument is not {@code null} but blank
+     * @throws DataAccessException      if database access fails
+     * @since 1.0.0
+     */
+    @RequestMapping(method = PUT, path = FIND_USER_GROUPS_PATH, consumes = APPLICATION_JSON_UTF8_VALUE, produces = APPLICATION_JSON_UTF8_VALUE)
+    public Page<? extends Projection> findByGroupName(@PathVariable UUID tenantId, @PathVariable String groupName,
+                                                      @RequestParam(name = PROJECTION_NAME_PARAM, required = false) String projectionName,
+                                                      Pageable pageable) {
+        //If this pageable sounds strange to you, take a look at https://docs.spring.io/spring-data/jpa/docs/1.8.x/reference/html/#core.web
+        return userFacade.findByUserGroup(tenantId, groupName, projectionName, pageable);
     }
 }

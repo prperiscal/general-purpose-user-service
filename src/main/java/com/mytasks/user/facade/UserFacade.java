@@ -21,6 +21,7 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * <p>Facade to hide {@link UserService} logic.
@@ -50,7 +51,7 @@ public class UserFacade {
     private final ConverterFacility converterFacility;
 
     /**
-     * <p>Retrieves specific {@link User} for corresponded tenant and user id.
+     * <p>Finds {@link User} by tenant and user id.
      *
      * @param tenantId       tenant id
      * @param userId         user id
@@ -73,6 +74,29 @@ public class UserFacade {
     }
 
     /**
+     * <p>Retrieves {@link User} if exits any with the same email as the user given but concatenating "2".
+     *
+     * @param tenantId       tenant id
+     * @param userId         user id
+     * @param projectionName the name of the projection the {@link User} shall be converted to
+     *
+     * @return corresponded users
+     * @throws UserNotFoundException    if {@link User} not found
+     * @throws IllegalArgumentException if argument tenantId or userId is empty
+     * @throws DataAccessException      if database access fails
+     * @since 1.0.0
+     */
+    public Projection findNextEmail(UUID tenantId, UUID userId, String projectionName) {
+        Validate.notNull(tenantId, "tenantId");
+        Validate.notNull(userId, "userId");
+
+        final Class<? extends Projection> targetType = projectionResolver.resolve(User.class, projectionName)
+                                                                         .orElse(UserBase.class);
+        User user = userService.findNextEmail(tenantId, userId).get(0);
+        return Optional.ofNullable(user).map(u -> converterFacility.convert(u, targetType)).orElse(null);
+    }
+
+    /**
      * <p>Retrieves {@link User} with the given email.
      *
      * @param email          user email
@@ -80,7 +104,6 @@ public class UserFacade {
      * @param projectionName the name of the projection the {@link User} shall be converted to
      *
      * @return {@link Page<Projection>} with the users
-     * @throws IllegalStateException    if deletion fails with severe problems
      * @throws IllegalArgumentException if email or pageable is {@code null}
      * @throws DataAccessException      if database access fails
      * @since 1.0.0
@@ -165,5 +188,31 @@ public class UserFacade {
         User user = userService.update(tenantId, userId, userUpdate);
         //        applicationEventPublisher.publishEvent(new UserUpdatedEvent(EVENT_SOURCE, user));
         return converterFacility.convert(user, targetType);
+    }
+
+    /**
+     * <p>Find {@link User} by tenant id and group id.
+     *
+     * @param tenantId       {@link UUID} of tenant
+     * @param userGroupName  {@link String} name of userGroup
+     * @param pageable       page parameters
+     * @param projectionName the name of the projection the {@link User} shall be converted to
+     *
+     * @return {@link Page<Projection>} with the users
+     * @throws IllegalArgumentException if argument is not {@code null} but blank
+     * @throws DataAccessException      if database access fails
+     * @since 1.0.0
+     */
+    @Transactional(readOnly = true)
+    public Page<? extends Projection> findByUserGroup(UUID tenantId, String userGroupName, String projectionName,
+                                                      Pageable pageable) {
+        Validate.notNull(tenantId, "tenantId");
+        Validate.notNull(userGroupName, "userGroupName");
+        Validate.notNull(pageable, "pageable");
+
+        final Class<? extends Projection> targetType = projectionResolver.resolve(User.class, projectionName)
+                                                                         .orElse(UserBase.class);
+        Page<User> users = userService.findByUserGroup(tenantId, userGroupName, pageable);
+        return converterFacility.convert(users, pageable, targetType);
     }
 }
