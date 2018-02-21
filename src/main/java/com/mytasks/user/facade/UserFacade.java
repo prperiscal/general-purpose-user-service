@@ -74,7 +74,7 @@ public class UserFacade {
     }
 
     /**
-     * <p>Retrieves {@link User} if exits any with the same email as the user given but concatenating "2".
+     * <p>Retrieves {@link User User(s)} belonging to same group or groups as the given user (by user id).
      *
      * @param tenantId       tenant id
      * @param userId         user id
@@ -86,14 +86,15 @@ public class UserFacade {
      * @throws DataAccessException      if database access fails
      * @since 1.0.0
      */
-    public Projection findNextEmail(UUID tenantId, UUID userId, String projectionName) {
+    public Page<? extends Projection> findGroupMates(UUID tenantId, UUID userId, String projectionName,
+                                                     Pageable pageable) {
         Validate.notNull(tenantId, "tenantId");
         Validate.notNull(userId, "userId");
 
         final Class<? extends Projection> targetType = projectionResolver.resolve(User.class, projectionName)
                                                                          .orElse(UserBase.class);
-        User user = userService.findNextEmail(tenantId, userId).get(0);
-        return Optional.ofNullable(user).map(u -> converterFacility.convert(u, targetType)).orElse(null);
+        Page<User> users = userService.findGroupMates(tenantId, userId, pageable);
+        return converterFacility.convert(users, pageable, targetType);
     }
 
     /**

@@ -1,6 +1,5 @@
 package com.mytasks.user.service;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -9,8 +8,8 @@ import com.mytasks.user.exception.UserNotFoundException;
 import com.mytasks.user.facility.ConverterFacility;
 import com.mytasks.user.model.User;
 import com.mytasks.user.repository.UserRepository;
-import com.mytasks.user.repository.specification.UserByPreviousUser;
 import com.mytasks.user.repository.specification.UserByTenantIdAndUserGroupName;
+import com.mytasks.user.repository.specification.UsersByOtherUserInSameGroup;
 import com.mytasks.user.rest.input.UserInsert;
 import com.mytasks.user.rest.input.UserUpdate;
 import lombok.NonNull;
@@ -73,12 +72,12 @@ public class UserService {
      * @since 1.0.0
      */
     @Transactional(readOnly = true)
-    public List<User> findNextEmail(UUID tenantId, UUID userId) {
+    public Page<User> findGroupMates(UUID tenantId, UUID userId, Pageable pageable) {
         Validate.notNull(tenantId, "tenantId");
         Validate.notNull(userId, "userId");
 
-        Specification<User> specification = new UserByPreviousUser(tenantId, userId);
-        return userRepository.findAll(specification);
+        Specification<User> specification = new UsersByOtherUserInSameGroup(tenantId, userId);
+        return userRepository.findAll(specification, pageable);
     }
 
     /**
