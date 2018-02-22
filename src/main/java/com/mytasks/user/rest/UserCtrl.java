@@ -1,17 +1,5 @@
 package com.mytasks.user.rest;
 
-import static org.springframework.http.HttpStatus.NOT_FOUND;
-import static org.springframework.http.HttpStatus.NO_CONTENT;
-import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8_VALUE;
-import static org.springframework.web.bind.annotation.RequestMethod.DELETE;
-import static org.springframework.web.bind.annotation.RequestMethod.GET;
-import static org.springframework.web.bind.annotation.RequestMethod.POST;
-import static org.springframework.web.bind.annotation.RequestMethod.PUT;
-
-import javax.validation.Valid;
-import java.util.Optional;
-import java.util.UUID;
-
 import com.mytasks.user.exception.UserNotFoundException;
 import com.mytasks.user.facade.UserFacade;
 import com.mytasks.user.model.User;
@@ -32,8 +20,20 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
+import java.util.Optional;
+import java.util.UUID;
+
+import static org.springframework.http.HttpStatus.NOT_FOUND;
+import static org.springframework.http.HttpStatus.NO_CONTENT;
+import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8_VALUE;
+import static org.springframework.web.bind.annotation.RequestMethod.DELETE;
+import static org.springframework.web.bind.annotation.RequestMethod.GET;
+import static org.springframework.web.bind.annotation.RequestMethod.POST;
+import static org.springframework.web.bind.annotation.RequestMethod.PUT;
+
 /**
- * <p>Rest controller to provide {@link User} content.
+ * <p>Rest controller for {@link User Users}.
  *
  * @author <a href="mailto:prperiscal@gmail.com">Pablo Rey Periscal</a>
  * @since 1.0.0
@@ -128,7 +128,6 @@ public class UserCtrl implements UserBinding {
     /**
      * <p>Inserts a new {@link User}.
      *
-     * @param tenantId       {@link UUID} of tenant id
      * @param userInsert     {@link UserInsert} user to insert
      * @param projectionName the name of the projection the {@link User} shall be converted to
      *
@@ -138,9 +137,9 @@ public class UserCtrl implements UserBinding {
      */
     @ResponseStatus(HttpStatus.CREATED)
     @RequestMapping(method = POST, path = INSERT_PATH, consumes = APPLICATION_JSON_UTF8_VALUE, produces = APPLICATION_JSON_UTF8_VALUE)
-    public Projection insert(@PathVariable UUID tenantId, @RequestBody @Valid UserInsert userInsert,
+    public Projection insert(@RequestBody @Valid UserInsert userInsert,
                              @RequestParam(name = PROJECTION_NAME_PARAM, required = false) String projectionName) {
-        return userFacade.insert(tenantId, userInsert, projectionName);
+        return userFacade.insert(userInsert, projectionName);
     }
 
     /**

@@ -1,8 +1,5 @@
 package com.mytasks.user.facade;
 
-import java.util.Optional;
-import java.util.UUID;
-
 import com.mytasks.user.common.Validate;
 import com.mytasks.user.exception.UserNotFoundException;
 import com.mytasks.user.facility.ConverterFacility;
@@ -22,6 +19,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Optional;
+import java.util.UUID;
 
 /**
  * <p>Facade to hide {@link UserService} logic.
@@ -143,7 +143,6 @@ public class UserFacade {
     /**
      * <p>Inserts the given {@link User}.
      *
-     * @param tenantId       {@link UUID} of tenant
      * @param userInsert     {@link UserInsert} user to insert
      * @param projectionName the name of the projection the {@link User} shall be converted to
      *
@@ -152,15 +151,14 @@ public class UserFacade {
      * @throws DataAccessException      if database access fails
      * @since 1.0.0
      */
-    public Projection insert(UUID tenantId, UserInsert userInsert, String projectionName) {
-        Validate.notNull(tenantId, "tenantId");
+    public Projection insert(UserInsert userInsert, String projectionName) {
         Validate.notNull(userInsert, "userInsert");
 
         userInsert.setPassword(passwordEncode.encodePassword(userInsert.getPassword()));
 
         final Class<? extends Projection> targetType = projectionResolver.resolve(User.class, projectionName)
                                                                          .orElse(UserBase.class);
-        User user = userService.insert(tenantId, userInsert);
+        User user = userService.insert(userInsert);
         //        applicationEventPublisher.publishEvent(new UserCreatedEvent(EVENT_SOURCE, user, password));
         return converterFacility.convert(user, targetType);
     }

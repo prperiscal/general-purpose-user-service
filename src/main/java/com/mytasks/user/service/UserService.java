@@ -1,8 +1,5 @@
 package com.mytasks.user.service;
 
-import java.util.Optional;
-import java.util.UUID;
-
 import com.mytasks.user.common.Validate;
 import com.mytasks.user.exception.UserNotFoundException;
 import com.mytasks.user.facility.ConverterFacility;
@@ -20,6 +17,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Optional;
+import java.util.UUID;
 
 /**
  * <p>Service for {@link User}. Communicates with the user repository directly.
@@ -45,7 +45,6 @@ public class UserService {
      *
      * @return {@link User}
      * @throws UserNotFoundException    if {@link User} not found
-     * @throws NullPointerException     if argument is {@code null}
      * @throws IllegalArgumentException if argument is {@code null}
      * @throws DataAccessException      if database access fails
      * @since 1.0.0
@@ -66,7 +65,6 @@ public class UserService {
      *
      * @return {@link User}
      * @throws UserNotFoundException    if {@link User} not found
-     * @throws NullPointerException     if argument is {@code null}
      * @throws IllegalArgumentException if argument is {@code null}
      * @throws DataAccessException      if database access fails
      * @since 1.0.0
@@ -128,20 +126,16 @@ public class UserService {
     /**
      * <p>Inserts a new {@link User}.
      *
-     * @param tenantId   {@link UUID} of tenant
      * @param userInsert the input data containing the information about inserting user
      *
      * @return created {@link User} object
-     * @throws NullPointerException if argument is {@code null}
-     * @throws DataAccessException  if database access fails
+     * @throws IllegalArgumentException if argument is {@code null}
+     * @throws DataAccessException      if database access fails
      * @since 1.0.0
      */
     @Transactional
-    public User insert(UUID tenantId, UserInsert userInsert) {
-        Validate.notNull(tenantId, "tenantId");
+    public User insert(UserInsert userInsert) {
         Validate.notNull(userInsert, "userInsert");
-
-        userInsert.setTenantId(tenantId);
 
         User user = converterFacility.convert(userInsert, User.class);
         return userRepository.save(user);
