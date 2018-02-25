@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
 @Component
 @RequiredArgsConstructor
 public class PasswordEncode {
-    //TODO: remove this class and just inject PasswordEndocer directly
+    //TODO: remove this class and just inject PasswordEncoder directly
 
     @NonNull
     private final PasswordEncoder passwordEncoder;

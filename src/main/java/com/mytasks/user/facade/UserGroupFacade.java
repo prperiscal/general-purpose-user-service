@@ -43,9 +43,9 @@ public class UserGroupFacade {
     /**
      * <p>Finds {@link UserGroup} by tenant and user id.
      *
-     * @param tenantId          {@link UUID}of tenant
-     * @param userGroupId       {@link UUID} of userGroup
-     * @param projectionName    the name of the projection the {@link UserGroup} shall be converted to
+     * @param tenantId       {@link UUID}of tenant
+     * @param userGroupId    {@link UUID} of userGroup
+     * @param projectionName the name of the projection the {@link UserGroup} shall be converted to
      *
      * @return corresponded users
      * @throws UserNotFoundException    if {@link UserGroup} not found
@@ -58,7 +58,7 @@ public class UserGroupFacade {
         Validate.notNull(userGroupId, "userGroupId");
 
         final Class<? extends Projection> targetType = projectionResolver.resolve(UserGroup.class, projectionName)
-                .orElse(UserGroupBase.class);
+                                                                         .orElse(UserGroupBase.class);
         UserGroup userGroup = userGroupService.findOne(tenantId, userGroupId);
         return Optional.ofNullable(userGroup).map(u -> converterFacility.convert(u, targetType)).orElse(null);
     }
@@ -66,8 +66,8 @@ public class UserGroupFacade {
     /**
      * <p>Delete the requested {@link UserGroup}.
      *
-     * @param tenantId      {@link UUID}of tenant
-     * @param userGroupId   {@link UUID} of userGroup
+     * @param tenantId    {@link UUID}of tenant
+     * @param userGroupId {@link UUID} of userGroup
      *
      * @return {@code true} if deleting was success or {@code false} if {@link User} with id is not exists
      * @throws IllegalArgumentException if argument is not {@code null} but blank
@@ -86,8 +86,8 @@ public class UserGroupFacade {
     /**
      * <p>Inserts the given {@link UserGroup}.
      *
-     * @param userGroupInsert   {@link UserGroupInsert} user to insert
-     * @param projectionName    the name of the projection the {@link UserGroup} shall be converted to
+     * @param userGroupInsert {@link UserGroupInsert} user to insert
+     * @param projectionName  the name of the projection the {@link UserGroup} shall be converted to
      *
      * @return created user object
      * @throws IllegalArgumentException if argument tenantId or userInsert are {@code null}
@@ -98,7 +98,7 @@ public class UserGroupFacade {
         Validate.notNull(userGroupInsert, "userGroupInsert");
 
         final Class<? extends Projection> targetType = projectionResolver.resolve(UserGroup.class, projectionName)
-                .orElse(UserGroupBase.class);
+                                                                         .orElse(UserGroupBase.class);
         UserGroup userGroup = userGroupService.insert(userGroupInsert);
         //        applicationEventPublisher.publishEvent(new UserCreatedEvent(EVENT_SOURCE, user, password));
         return converterFacility.convert(userGroup, targetType);
@@ -107,13 +107,13 @@ public class UserGroupFacade {
     /**
      * <p>Includes {@link User users} into the given {@link UserGroup}.
      *
-     * @param tenantId          {@link UUID} of tenant
-     * @param userGroupId       {@link UUID} of userGroup
-     * @param includeUsers      {@link IncludeUsers} containing the users's information to be included
+     * @param tenantId     {@link UUID} of tenant
+     * @param userGroupId  {@link UUID} of userGroup
+     * @param includeUsers {@link IncludeUsers} containing the users's information to be included
      *
-     * @throws IllegalArgumentException if argument is not {@code null} but blank
-     * @throws UserGroupNotFoundException   if no userGroup has been found
-     * @throws DataAccessException if database access fails
+     * @throws IllegalArgumentException   if argument is not {@code null} but blank
+     * @throws UserGroupNotFoundException if no userGroup has been found
+     * @throws DataAccessException        if database access fails
      * @since 1.0.0
      */
     public void addUsers(UUID tenantId, UUID userGroupId, IncludeUsers includeUsers) {
@@ -127,13 +127,13 @@ public class UserGroupFacade {
     /**
      * <p>Removes {@link User} from user group.</p>
      *
-     * @param tenantId          {@link UUID} of tenant
-     * @param userGroupId       {@link UUID} of userGroup
-     * @param removeUsers       {@link RemoveUsers} containing the users's information to be included
+     * @param tenantId    {@link UUID} of tenant
+     * @param userGroupId {@link UUID} of userGroup
+     * @param removeUsers {@link RemoveUsers} containing the users's information to be included
      *
-     * @throws IllegalArgumentException if argument is not {@code null} but blank
-     * @throws UserGroupNotFoundException   if no userGroup has been found
-     * @throws DataAccessException if database access fails
+     * @throws IllegalArgumentException   if argument is not {@code null} but blank
+     * @throws UserGroupNotFoundException if no userGroup has been found
+     * @throws DataAccessException        if database access fails
      * @since 1.0.0
      */
     public void removeUsers(UUID tenantId, UUID userGroupId, RemoveUsers removeUsers) {

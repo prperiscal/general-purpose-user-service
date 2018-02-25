@@ -1,7 +1,7 @@
 package com.mytasks.user.projection;
 
 /**
- * <p>Basae properties for projections.</p>
+ * <p>Base properties for projections.</p>
  *
  * @author <a href="mailto:prperiscal@gmail.com">Pablo Rey Periscal</a>
  * @since 1.0.0

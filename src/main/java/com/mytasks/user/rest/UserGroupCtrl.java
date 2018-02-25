@@ -42,7 +42,7 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RequiredArgsConstructor
 @RestController
-public class UserGroupCtrl implements UserGroupBinding{
+public class UserGroupCtrl implements UserGroupBinding {
 
     @NonNull
     private final UserGroupFacade userGroupFacade;
@@ -61,16 +61,17 @@ public class UserGroupCtrl implements UserGroupBinding{
      * @since 1.0.0
      */
     @RequestMapping(method = GET, path = FIND_ONE_PATH, produces = APPLICATION_JSON_UTF8_VALUE)
-    public Projection findOne(@PathVariable UUID tenantId, @PathVariable UUID userGroupId, @RequestParam(name = PROJECTION_NAME_PARAM, required = false) String projectionName) {
+    public Projection findOne(@PathVariable UUID tenantId, @PathVariable UUID userGroupId,
+                              @RequestParam(name = PROJECTION_NAME_PARAM, required = false) String projectionName) {
         return Optional.ofNullable(userGroupFacade.findOne(tenantId, userGroupId, projectionName))
-                .orElseThrow(() -> new UserNotFoundException(tenantId.toString(), userGroupId.toString()));
+                       .orElseThrow(() -> new UserNotFoundException(tenantId.toString(), userGroupId.toString()));
     }
 
     /**
      * <p>Delete the requested {@link UserGroup}.
      *
-     * @param tenantId      {@link UUID} of tenant
-     * @param userGroupId   {@link UUID} of userGroup
+     * @param tenantId    {@link UUID} of tenant
+     * @param userGroupId {@link UUID} of userGroup
      *
      * @return 204 if deleting was success
      * <p>404 {@link UserGroup} with userId is not exists
@@ -90,8 +91,8 @@ public class UserGroupCtrl implements UserGroupBinding{
     /**
      * <p>Inserts a new {@link UserGroup}.
      *
-     * @param userGroupInsert   {@link UserInsert} userGroup to insert
-     * @param projectionName    the name of the projection the {@link UserGroup} shall be converted to
+     * @param userGroupInsert {@link UserInsert} userGroup to insert
+     * @param projectionName  the name of the projection the {@link UserGroup} shall be converted to
      *
      * @return {@link UserGroup} created with Status 201
      * @throws DataAccessException if database access fails
@@ -100,27 +101,27 @@ public class UserGroupCtrl implements UserGroupBinding{
     @ResponseStatus(HttpStatus.CREATED)
     @RequestMapping(method = POST, path = INSERT_PATH, consumes = APPLICATION_JSON_UTF8_VALUE, produces = APPLICATION_JSON_UTF8_VALUE)
     public Projection insert(@RequestBody @Valid UserGroupInsert userGroupInsert,
-            @RequestParam(name = PROJECTION_NAME_PARAM, required = false) String projectionName) {
+                             @RequestParam(name = PROJECTION_NAME_PARAM, required = false) String projectionName) {
         return userGroupFacade.insert(userGroupInsert, projectionName);
     }
 
     /**
      * <p>Includes a new {@link User useres} inside a given group.
      *
-     * @param tenantId          {@link UUID} of tenant id
-     * @param userGroupId       {@link UUID} of userGroup
-     * @param userGroupId       {@link IncludeUsers} users info to be included
+     * @param tenantId    {@link UUID} of tenant id
+     * @param userGroupId {@link UUID} of userGroup
+     * @param includeUsers {@link IncludeUsers} users info to be included
      *
      * @return 204, "No Content"
-     * @throws UserGroupNotFoundException   if no userGroup has been found
-     * @throws DataAccessException if database access fails
+     * @throws UserGroupNotFoundException if no userGroup has been found
+     * @throws DataAccessException        if database access fails
      * @since 1.0.0
      */
     //Arguably this request can be defined as PUT, coz the user is being updated, but the deletion should also be considered PUT too, and
     //makes sense to distinguish from both of them.
     @RequestMapping(method = POST, path = ADD_USER_PATH, consumes = APPLICATION_JSON_UTF8_VALUE, produces = APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<Object> addUser(@PathVariable UUID tenantId, @PathVariable UUID userGroupId,
-            @RequestBody @Valid IncludeUsers includeUsers) {
+                                          @RequestBody @Valid IncludeUsers includeUsers) {
         userGroupFacade.addUsers(tenantId, userGroupId, includeUsers);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
@@ -128,18 +129,18 @@ public class UserGroupCtrl implements UserGroupBinding{
     /**
      * <p>Removes a {@link User users} from the given group.
      *
-     * @param tenantId       {@link UUID} of tenant id
-     * @param userGroupId    {@link UUID} of userGroup
-     * @param removeUsers    {@link UserUpdate} users info to be removed
+     * @param tenantId    {@link UUID} of tenant id
+     * @param userGroupId {@link UUID} of userGroup
+     * @param removeUsers {@link UserUpdate} users info to be removed
      *
      * @return 204, "No Content"
-     * @throws UserGroupNotFoundException   if no userGroup has been found
-     * @throws DataAccessException if database access fails
+     * @throws UserGroupNotFoundException if no userGroup has been found
+     * @throws DataAccessException        if database access fails
      * @since 1.0.0
      */
     @RequestMapping(method = DELETE, path = REMOVE_USER_PATH, consumes = APPLICATION_JSON_UTF8_VALUE, produces = APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<Object> removeUser(@PathVariable UUID tenantId, @PathVariable UUID userGroupId,
-            @RequestBody @Valid RemoveUsers removeUsers) {
+                                             @RequestBody @Valid RemoveUsers removeUsers) {
         userGroupFacade.removeUsers(tenantId, userGroupId, removeUsers);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }

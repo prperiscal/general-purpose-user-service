@@ -1,12 +1,12 @@
 package com.mytasks.user.rest.input;
 
-import com.mytasks.user.model.UserGroup;
-import lombok.Data;
-
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.UUID;
+
+import com.mytasks.user.model.UserGroup;
+import lombok.Data;
 
 /**
  * <p>{@link UserGroup} insert input.

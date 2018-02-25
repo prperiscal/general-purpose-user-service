@@ -59,7 +59,8 @@ public class UserCtrl implements UserBinding {
      * @since 1.0.0
      */
     @RequestMapping(method = GET, path = FIND_ONE_PATH, produces = APPLICATION_JSON_UTF8_VALUE)
-    public Projection findOne(@PathVariable UUID tenantId, @PathVariable UUID userId, @RequestParam(name = PROJECTION_NAME_PARAM, required = false) String projectionName) {
+    public Projection findOne(@PathVariable UUID tenantId, @PathVariable UUID userId,
+                              @RequestParam(name = PROJECTION_NAME_PARAM, required = false) String projectionName) {
         return Optional.ofNullable(userFacade.findOne(tenantId, userId, projectionName))
                        .orElseThrow(() -> new UserNotFoundException(tenantId.toString(), userId.toString()));
     }

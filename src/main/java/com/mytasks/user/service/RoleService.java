@@ -1,10 +1,10 @@
 package com.mytasks.user.service;
 
+import java.util.Set;
+
 import com.google.common.collect.Sets;
 import com.mytasks.user.model.Role;
 import org.springframework.stereotype.Service;
-
-import java.util.Set;
 
 /**
  * <p>Service for {@link Role Roles}.

@@ -23,7 +23,7 @@ import org.springframework.lang.Nullable;
  * <p>Specification to search users within the same group(s) as the given user.
  * <p>
  * <P>For the given user id, all belongings groups will be fetched.
- * <p>For each of theses groups, all users will be returned.
+ * <p>For each of these groups, all users will be returned.
  * <p>No repeating users and excluding the given user.
  *
  * @author <a href="mailto:prperiscal@gmail.com">Pablo Rey Periscal</a>

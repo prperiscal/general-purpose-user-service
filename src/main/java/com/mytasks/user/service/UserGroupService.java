@@ -1,6 +1,10 @@
 package com.mytasks.user.service;
 
 
+import java.util.Optional;
+import java.util.Set;
+import java.util.UUID;
+
 import com.mytasks.user.common.Validate;
 import com.mytasks.user.exception.UserGroupNotFoundException;
 import com.mytasks.user.exception.UserNotFoundException;
@@ -17,10 +21,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Optional;
-import java.util.Set;
-import java.util.UUID;
 
 /**
  * <p>Service for {@link UserGroup}. Communicates with the userGroup repository directly.
@@ -44,8 +44,8 @@ public class UserGroupService {
     /**
      * <p>Finds {@link UserGroup} by tenant and user id.
      *
-     * @param tenantId      {@link UUID} tenant
-     * @param userGroupId   {@link UUID} userGroup
+     * @param tenantId    {@link UUID} tenant
+     * @param userGroupId {@link UUID} userGroup
      *
      * @return {@link UserGroup}
      * @throws UserNotFoundException    if {@link User} not found
@@ -64,8 +64,8 @@ public class UserGroupService {
     /**
      * <p>Delete the requested {@link UserGroup}.
      *
-     * @param tenantId      {@link UUID} of tenant
-     * @param userGroupId   {@link UUID} of userGroup
+     * @param tenantId    {@link UUID} of tenant
+     * @param userGroupId {@link UUID} of userGroup
      *
      * @return {@code true} if deleting was success or {@code false} if {@link User} with id is not exists
      * @throws IllegalArgumentException if tenantId or userId are {@code null}
@@ -90,7 +90,7 @@ public class UserGroupService {
     /**
      * <p>Inserts a new {@link UserGroup}.
      *
-     * @param userGroupInsert   the input data containing the information about inserting user
+     * @param userGroupInsert the input data containing the information about inserting user
      *
      * @return created {@link User} object
      * @throws NullPointerException if argument is {@code null}
@@ -108,13 +108,13 @@ public class UserGroupService {
     /**
      * <p>Includes {@link User users} into the given {@link UserGroup}.
      *
-     * @param tenantId          {@link UUID} of tenant
-     * @param userGroupId       {@link UUID} of userGroup
-     * @param includeUsers      {@link IncludeUsers} containing the users's information to be included
+     * @param tenantId     {@link UUID} of tenant
+     * @param userGroupId  {@link UUID} of userGroup
+     * @param includeUsers {@link IncludeUsers} containing the users's information to be included
      *
-     * @throws IllegalArgumentException     if argument is not {@code null} but blank
-     * @throws UserGroupNotFoundException   if no userGroup has been found
-     * @throws DataAccessException          if database access fails
+     * @throws IllegalArgumentException   if argument is not {@code null} but blank
+     * @throws UserGroupNotFoundException if no userGroup has been found
+     * @throws DataAccessException        if database access fails
      * @since 1.0.0
      */
     public void addUsers(UUID tenantId, UUID userGroupId, IncludeUsers includeUsers) {
@@ -123,7 +123,8 @@ public class UserGroupService {
         Validate.notNull(includeUsers, "includeUsers");
 
         UserGroup userGroup = Optional.ofNullable(userGroupRepository.findByTenantIdAndId(tenantId, userGroupId))
-                .orElseThrow(() -> new UserGroupNotFoundException(tenantId.toString(), userGroupId.toString()));
+                                      .orElseThrow(() -> new UserGroupNotFoundException(tenantId.toString(),
+                                                                                        userGroupId.toString()));
 
         Set<User> users = userRepository.findByTenantIdAndIdIsIn(tenantId, includeUsers.getUserIds());
         userGroup.getUsers().addAll(users);
@@ -133,13 +134,13 @@ public class UserGroupService {
     /**
      * <p>Removes {@link User} from user group.</p>
      *
-     * @param tenantId          {@link UUID} of tenant
-     * @param userGroupId       {@link UUID} of userGroup
-     * @param removeUsers       {@link RemoveUsers} containing the users's information to be included
+     * @param tenantId    {@link UUID} of tenant
+     * @param userGroupId {@link UUID} of userGroup
+     * @param removeUsers {@link RemoveUsers} containing the users's information to be included
      *
-     * @throws IllegalArgumentException     if argument is not {@code null} but blank
-     * @throws UserGroupNotFoundException   if no userGroup has been found
-     * @throws DataAccessException          if database access fails
+     * @throws IllegalArgumentException   if argument is not {@code null} but blank
+     * @throws UserGroupNotFoundException if no userGroup has been found
+     * @throws DataAccessException        if database access fails
      * @since 1.0.0
      */
     public void removeUsers(UUID tenantId, UUID userGroupId, RemoveUsers removeUsers) {
@@ -148,7 +149,8 @@ public class UserGroupService {
         Validate.notNull(removeUsers, "removeUsers");
 
         UserGroup userGroup = Optional.ofNullable(userGroupRepository.findByTenantIdAndId(tenantId, userGroupId))
-                .orElseThrow(() -> new UserGroupNotFoundException(tenantId.toString(), userGroupId.toString()));
+                                      .orElseThrow(() -> new UserGroupNotFoundException(tenantId.toString(),
+                                                                                        userGroupId.toString()));
 
         Set<User> users = userRepository.findByTenantIdAndIdIsIn(tenantId, removeUsers.getUserIds());
         userGroup.getUsers().removeAll(users);

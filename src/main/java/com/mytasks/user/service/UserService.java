@@ -1,5 +1,8 @@
 package com.mytasks.user.service;
 
+import java.util.Optional;
+import java.util.UUID;
+
 import com.mytasks.user.common.Validate;
 import com.mytasks.user.exception.UserNotFoundException;
 import com.mytasks.user.facility.ConverterFacility;
@@ -17,9 +20,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Optional;
-import java.util.UUID;
 
 /**
  * <p>Service for {@link User}. Communicates with the user repository directly.

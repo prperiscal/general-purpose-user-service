@@ -1,13 +1,13 @@
 package com.mytasks.user.rest.input;
 
-import com.mytasks.user.model.Role;
-import com.mytasks.user.model.User;
-import lombok.Data;
-
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.UUID;
+
+import com.mytasks.user.model.Role;
+import com.mytasks.user.model.User;
+import lombok.Data;
 
 /**
  * <p>{@link User} insert input.

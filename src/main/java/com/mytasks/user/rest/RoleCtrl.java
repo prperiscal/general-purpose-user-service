@@ -1,5 +1,10 @@
 package com.mytasks.user.rest;
 
+import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8_VALUE;
+import static org.springframework.web.bind.annotation.RequestMethod.GET;
+
+import java.util.Set;
+
 import com.mytasks.user.facade.RoleFacade;
 import com.mytasks.user.model.Role;
 import com.mytasks.user.projection.RoleBase;
@@ -7,11 +12,6 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.Set;
-
-import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8_VALUE;
-import static org.springframework.web.bind.annotation.RequestMethod.GET;
 
 /**
  * <p>Rest controller for {@link Role Roles}.

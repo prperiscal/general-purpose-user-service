@@ -1,14 +1,14 @@
 package com.mytasks.user.repository;
 
+import static org.springframework.transaction.annotation.Propagation.MANDATORY;
+
+import java.util.UUID;
+
 import com.mytasks.user.model.UserGroup;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.UUID;
-
-import static org.springframework.transaction.annotation.Propagation.MANDATORY;
 
 /**
  * <p>Repository to provide access to {@link UserGroup} objects.</p>
