@@ -1,6 +1,6 @@
 package com.mytasks.user;
 
-import com.prperiscal.resolver.projection.EnableProjectionResolver;
+import com.prperiscal.spring.resolver.projection.EnableProjectionResolver;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 

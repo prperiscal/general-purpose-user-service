@@ -4,7 +4,7 @@ import java.util.Set;
 
 import com.mytasks.user.model.User;
 import com.mytasks.user.model.UserGroup;
-import com.prperiscal.resolver.projection.base.Projection;
+import com.prperiscal.spring.resolver.projection.base.Projection;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 

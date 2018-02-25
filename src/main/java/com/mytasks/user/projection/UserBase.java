@@ -3,7 +3,7 @@ package com.mytasks.user.projection;
 import java.util.UUID;
 
 import com.mytasks.user.model.User;
-import com.prperiscal.resolver.projection.base.Projection;
+import com.prperiscal.spring.resolver.projection.base.Projection;
 import lombok.Data;
 
 /**

@@ -1,7 +1,7 @@
 package com.mytasks.user.projection;
 
 import com.mytasks.user.model.Role;
-import com.prperiscal.resolver.projection.base.Projection;
+import com.prperiscal.spring.resolver.projection.base.Projection;
 import lombok.Data;
 
 /**

@@ -1,5 +1,8 @@
 package com.mytasks.user.facade;
 
+import java.util.Optional;
+import java.util.UUID;
+
 import com.mytasks.user.common.Validate;
 import com.mytasks.user.exception.UserGroupNotFoundException;
 import com.mytasks.user.exception.UserNotFoundException;
@@ -11,15 +14,12 @@ import com.mytasks.user.rest.input.IncludeUsers;
 import com.mytasks.user.rest.input.RemoveUsers;
 import com.mytasks.user.rest.input.UserGroupInsert;
 import com.mytasks.user.service.UserGroupService;
-import com.prperiscal.resolver.projection.base.Projection;
-import com.prperiscal.resolver.projection.base.ProjectionResolver;
+import com.prperiscal.spring.resolver.projection.base.Projection;
+import com.prperiscal.spring.resolver.projection.base.ProjectionResolver;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Component;
-
-import java.util.Optional;
-import java.util.UUID;
 
 /**
  * <p>Facade to hide {@link UserGroupService} logic.

@@ -65,7 +65,7 @@ public class UsersByOtherUserInSameGroup implements Specification<User> {
                    and user0_.tenant_id=?
                    and user0_.id<>? limit ?
          */
-        ////@formatter:on
+        //@formatter:on
 
         List<Predicate> predicates = Lists.newArrayList();
 
