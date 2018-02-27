@@ -1,11 +1,14 @@
-package com.prperiscal.spring.data.compòse;
+package com.prperiscal.spring.data.compose;
 
-import org.apache.commons.lang3.StringUtils;
+import com.prperiscal.spring.data.compose.composer.DatabaseComposer;
 import org.apache.commons.lang3.Validate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.TestContext;
 import org.springframework.test.context.support.AbstractTestExecutionListener;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.context.support.GenericWebApplicationContext;
+
+import static org.apache.commons.lang3.StringUtils.isEmpty;
 
 /**
  * <p>Execution Listener which allows the logic execution for preparing the database.
@@ -32,6 +35,9 @@ public class DataComposeExecutionListener extends AbstractTestExecutionListener 
     @Override
     public void beforeTestClass(TestContext testContext) throws Exception {
         Validate.notNull(testContext, "The validated '%s' is null", "testContext");
+        GenericWebApplicationContext appContext = (GenericWebApplicationContext) testContext.getApplicationContext();
+        appContext.registerBean(DatabaseComposer.class);
+
         testContext.getApplicationContext().getAutowireCapableBeanFactory().autowireBean(this);
     }
 
@@ -56,11 +62,14 @@ public class DataComposeExecutionListener extends AbstractTestExecutionListener 
     @Override
     public void beforeTestMethod(TestContext testContext) throws Exception {
         Validate.notNull(testContext, "The validated '%s' is null", "testContext");
-        String composeResource = testContext.getClass().getDeclaredAnnotation(SpringDataCompose.class).value();
-        if(StringUtils.isEmpty(composeResource)) {
-            //            composeResource =
+        DataComposeResource dataComposeResourceAnnotation = testContext.getTestMethod().getDeclaredAnnotation(DataComposeResource.class);
+        if(dataComposeResourceAnnotation != null) {
+            if (isEmpty(dataComposeResourceAnnotation.value())) {
+                databaseComposer.compose(testContext.getTestClass(), testContext.getTestMethod().getName());
+            } else {
+                databaseComposer.compose(testContext.getTestClass(), dataComposeResourceAnnotation.value());
+            }
         }
-        //        databaseComposer.compòse(testContext.getTestClass(), testContext.getTestMethod().getName());
     }
 
 }

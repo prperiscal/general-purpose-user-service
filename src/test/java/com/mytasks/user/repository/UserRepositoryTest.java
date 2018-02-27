@@ -1,19 +1,24 @@
 package com.mytasks.user.repository;
 
-import static com.mytasks.user.CommonTestVars.PROFILE;
-
-import com.prperiscal.spring.data.compòse.SpringDataCompose;
+import com.mytasks.user.ServiceApplication;
+import com.prperiscal.spring.data.compose.DataComposeResource;
+import com.prperiscal.spring.data.compose.SpringDataCompose;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import static com.mytasks.user.CommonTestVars.PROFILE;
+
 @ActiveProfiles(value = PROFILE)
 @RunWith(SpringRunner.class)
+@SpringBootTest(classes = ServiceApplication.class)
 @SpringDataCompose()
 public class UserRepositoryTest {
 
     @Test
+    @DataComposeResource("testJson.json")
     public void findByTenantIdAndId() throws Exception {
         System.out.printf("se");
     }
