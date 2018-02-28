@@ -1,49 +1,51 @@
 {
   "metadata": {
-    "users": {
-      "class": "com.mytasks.user.model.User",
+    "user": {
+      "_class": "com.mytasks.user.model.User",
       "repository": "userRepository",
       "id": "id"
     },
-    "userGroups": {
-      "class": "com.mytasks.user.model.UserGroup",
+    "userGroup": {
+      "_class": "com.mytasks.user.model.UserGroup",
       "repository": "userGroupRepository",
       "id": "id"
     }
   },
-  "users": [
-    {
-      "id": "550e8400-e29b-41d4-a716-446655440000",
-      "email": "prperiscal@gmail.com",
-      "name": "Pablo",
-      "password": "somePass",
-      "tenantId": "550e8400-e29b-41d4-a716-446655440000"
-    }
-  ],
-  "userGroups": [
-    {
-      "id": "550e8400-e29b-41d4-a716-446655440001",
-      "name": "group1",
-      "tenantId": "550e8400-e29b-41d4-a716-446655440000",
-      "@users": [
-        "550e8400-e29b-41d4-a716-446655440000"
-      ]
-    },
-    {
-      "id": "550e8400-e29b-41d4-a716-446655440002",
-      "name": "group2",
-      "tenantId": "550e8400-e29b-41d4-a716-446655440000",
-      "@users": [
-        "550e8400-e29b-41d4-a716-446655440000"
-      ]
-    },
-    {
-      "id": "550e8400-e29b-41d4-a716-446655440003",
-      "name": "group3",
-      "tenantId": "550e8400-e29b-41d4-a716-446655440000",
-      "@users": [
-        "550e8400-e29b-41d4-a716-446655440000"
-      ]
-    }
-  ]
+  "entities": {
+    "user": [
+      {
+        "id": "550e8400-e29b-41d4-a716-446655440000",
+        "email": "prperiscal@gmail.com",
+        "name": "Pablo",
+        "password": "somePass",
+        "tenantId": "550e8400-e29b-41d4-a716-446655440000"
+      }
+    ],
+    "userGroup": [
+      {
+        "id": "550e8400-e29b-41d4-a716-446655440001",
+        "name": "group1",
+        "tenantId": "550e8400-e29b-41d4-a716-446655440000",
+        "@users": [
+          "user@550e8400-e29b-41d4-a716-446655440000"
+        ]
+      },
+      {
+        "id": "550e8400-e29b-41d4-a716-446655440002",
+        "name": "group2",
+        "tenantId": "550e8400-e29b-41d4-a716-446655440000",
+        "@users": [
+          "user@550e8400-e29b-41d4-a716-446655440000"
+        ]
+      },
+      {
+        "id": "550e8400-e29b-41d4-a716-446655440003",
+        "name": "group3",
+        "tenantId": "550e8400-e29b-41d4-a716-446655440000",
+        "@users": [
+          "user@550e8400-e29b-41d4-a716-446655440000"
+        ]
+      }
+    ]
+  }
 }
