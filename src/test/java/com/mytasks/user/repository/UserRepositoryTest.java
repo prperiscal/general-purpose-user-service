@@ -2,7 +2,11 @@ package com.mytasks.user.repository;
 
 import static com.mytasks.user.CommonTestVars.PROFILE;
 
+import java.util.List;
+
 import com.mytasks.user.ServiceApplication;
+import com.mytasks.user.model.User;
+import com.mytasks.user.model.UserGroup;
 import com.prperiscal.spring.data.compose.DataComposeResource;
 import com.prperiscal.spring.data.compose.SpringDataCompose;
 import org.assertj.core.api.Assertions;
@@ -22,10 +26,15 @@ public class UserRepositoryTest {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private UserGroupRepository userGroupRepository;
+
     @Test
     @DataComposeResource("testJson.json")
     public void findByTenantIdAndId() throws Exception {
-        Assertions.assertThat(userRepository.findAll()).isNotEmpty();
+        List<User> users = (List<User>) userRepository.findAll();
+        List<UserGroup> userGroups = (List<UserGroup>) userGroupRepository.findAll();
+        Assertions.assertThat(users).isNotEmpty();
     }
 
     @Test

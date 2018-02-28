@@ -4,10 +4,12 @@ import static lombok.AccessLevel.PRIVATE;
 import static org.apache.commons.lang3.StringUtils.replace;
 
 import java.io.FileNotFoundException;
+import java.lang.reflect.Method;
 import java.net.URL;
 
 import com.prperiscal.spring.data.compose.exception.FileInvalidException;
 import lombok.NoArgsConstructor;
+import org.springframework.util.StringUtils;
 
 /**
  * @author <a href="mailto:prperiscal@gmail.com">Pablo Rey Periscal</a>
@@ -43,6 +45,10 @@ final class ComposerUtils {
 
     static String getValidPackagePath(String packagePath) {
         return "/".concat(replace(packagePath, ".", "/").concat("/"));
+    }
+
+    static Method getGetter(Object object, String fieldName) throws NoSuchMethodException {
+        return object.getClass().getMethod("get" + StringUtils.capitalize(fieldName));
     }
 
 }

@@ -1,30 +1,35 @@
 package com.prperiscal.spring.data.compose.composer;
 
+import static com.prperiscal.spring.data.compose.composer.ComposerUtils.getEntityClass;
+import static com.prperiscal.spring.data.compose.composer.ComposerUtils.getGetter;
+import static com.prperiscal.spring.data.compose.composer.ComposerUtils.getResource;
+
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.net.URL;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.prperiscal.spring.data.compose.exception.GenericComposeException;
 import com.prperiscal.spring.data.compose.model.ComposeData;
 import com.prperiscal.spring.data.compose.model.ComposeMetaData;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import org.assertj.core.util.Maps;
+import org.apache.commons.beanutils.BeanUtils;
 import org.springframework.context.ApplicationContext;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import java.io.IOException;
-import java.net.URL;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
-import static com.prperiscal.spring.data.compose.composer.ComposerUtils.getEntityClass;
-import static com.prperiscal.spring.data.compose.composer.ComposerUtils.getResource;
 
 /**
  * @author <a href="mailto:prperiscal@gmail.com">Pablo Rey Periscal</a>
@@ -56,43 +61,76 @@ public class DatabaseComposer {
     }
 
     private void importResource(ComposeData composeData) {
-        Map<String, Map<String, List<Object>>> insertedEntities = composeData.getEntities().entrySet().stream().map(
-                entry -> processEntityGroup(entry.getValue(), composeData.getMetadata().get(entry.getKey()))).flatMap(
-                map -> map.entrySet().stream()).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-        createRelations(composeData, insertedEntities);
+        Map<String, Object> insertedEntities = composeData.getEntities().entrySet().stream().map(
+                entry -> processEntityGroup(entry, composeData.getMetadata().get(entry.getKey()))).flatMap(
+                map -> map.entrySet().stream()).collect(Collectors.toMap(Entry::getKey, Entry::getValue));
+
+        connect(composeData, insertedEntities);
     }
 
-    private void createRelations(ComposeData composeData, Map<String, Map<String, List<Object>>> insertedEntities) {
+    private void connect(ComposeData composeData, Map<String, Object> insertedEntities) {
         composeData.getEntities().forEach(
-                (key, value) -> joinEntityGroup(value, composeData.getMetadata().get(key), insertedEntities));
+                (key, value) -> connectEntityGroup(key, value, composeData.getMetadata().get(key), insertedEntities));
     }
 
-    private void joinEntityGroup(List<Map<String, Object>> entitiesData, ComposeMetaData composeMetaData,
-            Map<String, Map<String, List<Object>>> insertedEntities) {
-        for (Map<String, Object> entityData : entitiesData) {
-            entityData.entrySet().stream().filter(entry -> entry.getValue().toString().startsWith(FK_CHAR)).forEach(
-                    entry -> joinEntity(entry, entityData, composeMetaData, insertedEntities));
+    private void connectEntityGroup(String group, List<Map<String, Object>> entitiesData,
+                                    ComposeMetaData composeMetaData, Map<String, Object> insertedEntities) {
+        for(Map<String, Object> entityData : entitiesData) {
+            entityData.entrySet().stream().filter(entry -> entry.getKey().startsWith(FK_CHAR)).forEach(
+                    entry -> connectEntity(group, entry, entityData, composeMetaData, insertedEntities));
         }
         entityManager.flush();
     }
 
-    private void joinEntity(Map.Entry<String, Object> entry, Map<String, Object> entityData,
-            ComposeMetaData composeMetaData, Map<String, Map<String, List<Object>>> entitiesData) {
+    private void connectEntity(String group, Entry<String, Object> entryField, Map<String, Object> entityData,
+                               ComposeMetaData composeMetaData, Map<String, Object> entitiesData) {
 
-        String parseredFiled = entry.getKey().substring(1);
-        entitiesData.get(composeMetaData.get_class()).get()
+        String parsedField = entryField.getKey().substring(1);
 
+        Object thisEntity = entitiesData.get(group + FK_CHAR + entityData.get(composeMetaData.getId()));
+        CrudRepository repository = (CrudRepository) appContext.getBean(composeMetaData.getRepository());
+
+        Object foreigners = entryField.getValue();
+        if(foreigners instanceof List) {
+            for(Object foreign : (List) foreigners) {
+                Object foreignEntity = entitiesData.get(foreign.toString());
+                setInto(thisEntity, parsedField, foreignEntity);
+                repository.save(thisEntity);
+            }
+        } else {
+            Object foreignEntity = entitiesData.get(foreigners.toString());
+            setInto(thisEntity, parsedField, foreignEntity);
+            repository.save(thisEntity);
+        }
     }
 
-    private Map<String, List<Object>> processEntityGroup(List<Map<String, Object>> entitiesData,
-            ComposeMetaData composeMetaData) {
-        List<Object> insertedEntities = Lists.newArrayList();
-        for (Map<String, Object> entityData : entitiesData) {
-            insertedEntities.add(insertEntity(composeMetaData, entityData));
+    private void setInto(Object entity, String fieldName, Object foreignEntity) {
+        try {
+            Method getter = getGetter(entity, fieldName);
+            if(getter.getReturnType().isAssignableFrom(Set.class)) {
+                Set<Object> ingredients = (Set<Object>) getter.invoke(entity);
+                ingredients.add(foreignEntity);
+                BeanUtils.setProperty(entity, fieldName, ingredients);
+            } else {
+                BeanUtils.setProperty(entity, fieldName, foreignEntity);
+            }
+
+        } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private Map<String, Object> processEntityGroup(Map.Entry<String, List<Map<String, Object>>> groupEntry,
+                                                   ComposeMetaData composeMetaData) {
+        Map<String, Object> insertedEntities = Maps.newHashMap();
+
+        for(Map<String, Object> entityData : groupEntry.getValue()) {
+            String key = groupEntry.getKey() + FK_CHAR + entityData.get(composeMetaData.getId()).toString();
+            insertedEntities.put(key, insertEntity(composeMetaData, entityData));
         }
         entityManager.flush();
 
-        return Maps.newHashMap(composeMetaData.get_class(), insertedEntities);
+        return insertedEntities;
     }
 
     private Object insertEntity(ComposeMetaData composeMetaData, Map<String, Object> entityResource) {
