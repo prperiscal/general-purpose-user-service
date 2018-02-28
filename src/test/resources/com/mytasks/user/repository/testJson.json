@@ -1,39 +1,48 @@
 {
+  "metadata": {
+    "users": {
+      "class": "com.mytasks.user.model.User",
+      "repository": "userRepository",
+      "id": "id"
+    },
+    "userGroups": {
+      "class": "com.mytasks.user.model.UserGroup",
+      "repository": "userGroupRepository",
+      "id": "id"
+    }
+  },
   "users": [
     {
-      "_class": "com.mytasks.user.model.User",
-      "id": "1f2795db-b4d1-4186-b2b4-20316ddfccd1",
-      "email": "anton.lytvyn.ext@gbtec.de1",
-      "name": "Anton1",
-      "tenantId": "ff2795db-b4d1-4186-b2b4-20316ddfccd1"
+      "id": "550e8400-e29b-41d4-a716-446655440000",
+      "email": "prperiscal@gmail.com",
+      "name": "Pablo",
+      "password": "somePass",
+      "tenantId": "550e8400-e29b-41d4-a716-446655440000"
     }
   ],
   "userGroups": [
     {
-      "_class": "com.mytasks.user.model.UserGroup",
-      "id": "1f2795db-b4d1-3386-b2b4-20316ddfccd1",
+      "id": "550e8400-e29b-41d4-a716-446655440001",
+      "name": "group1",
+      "tenantId": "550e8400-e29b-41d4-a716-446655440000",
+      "@users": [
+        "550e8400-e29b-41d4-a716-446655440000"
+      ]
+    },
+    {
+      "id": "550e8400-e29b-41d4-a716-446655440002",
       "name": "group2",
-      "tenantId": "ff2795db-b4d1-4186-b2b4-20316ddfccd1",
+      "tenantId": "550e8400-e29b-41d4-a716-446655440000",
       "@users": [
-        "1f2795db-b4d1-4186-b2b4-20316ddfccd1"
+        "550e8400-e29b-41d4-a716-446655440000"
       ]
     },
     {
-      "_class": "com.mytasks.user.model.UserGroup",
-      "id": "2f2795db-b4d1-4286-b2b4-20316ddfccd2",
+      "id": "550e8400-e29b-41d4-a716-446655440003",
       "name": "group3",
-      "tenantId": "ff2795db-b4d1-4186-b2b4-20316ddfccd1",
+      "tenantId": "550e8400-e29b-41d4-a716-446655440000",
       "@users": [
-        "1f2795db-b4d1-4186-b2b4-20316ddfccd1"
-      ]
-    },
-    {
-      "_class": "com.mytasks.user.model.UserGroup",
-      "id": "3f2795db-b4d1-5186-b2b4-20316ddfccd3",
-      "name": "group4",
-      "tenantId": "ff2795db-b4d1-4186-b2b4-20316ddfccd1",
-      "@users": [
-        "1f2795db-b4d1-4186-b2b4-20316ddfccd1"
+        "550e8400-e29b-41d4-a716-446655440000"
       ]
     }
   ]

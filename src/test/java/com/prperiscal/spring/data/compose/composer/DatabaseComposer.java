@@ -1,17 +1,26 @@
 package com.prperiscal.spring.data.compose.composer;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.prperiscal.spring.data.compose.exception.FileInvalidException;
-import lombok.RequiredArgsConstructor;
-import org.springframework.core.io.ResourceLoader;
-import org.springframework.stereotype.Component;
+import static com.prperiscal.spring.data.compose.composer.ComposerUtils.getEntityClass;
+import static com.prperiscal.spring.data.compose.composer.ComposerUtils.getResource;
 
-import java.io.File;
-import java.io.FileNotFoundException;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import java.io.IOException;
+import java.net.URL;
+import java.util.List;
 import java.util.Map;
 
-import static org.apache.commons.lang3.StringUtils.replace;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.prperiscal.spring.data.compose.exception.GenericComposeException;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * @author <a href="mailto:prperiscal@gmail.com">Pablo Rey Periscal</a>
@@ -20,36 +29,53 @@ import static org.apache.commons.lang3.StringUtils.replace;
 @RequiredArgsConstructor
 public class DatabaseComposer {
 
-    private static final String FILE_EXTENSION_JSON = "json";
+    @PersistenceContext
+    @Autowired
+    private EntityManager entityManager;
 
-    private final ResourceLoader resourceLoader;
+    @Autowired
+    private ApplicationContext appContext;
 
+    @Modifying
+    @Transactional
     public void compose(Class<?> testClass, String composeResource) throws IOException {
-        File file =  getResource(testClass, composeResource);
+        URL resourcePath = getResource(testClass, composeResource);
 
         ObjectMapper objectMapper = new ObjectMapper();
-        Map<?,?> empMap = objectMapper.readValue(file, Map.class);
+        Map<String, List<Map<String, Object>>> resourceMap = objectMapper
+                .readValue(resourcePath, new TypeReference<Map<String, List<Map<String, Object>>>>() {
+                });
 
-        System.out.println("breakpoint");
+        importResource(resourceMap);
     }
 
-    private File getResource(Class<?> testClass, String composeResource) throws FileNotFoundException {
-        Long dots = composeResource.chars().filter(character -> character == '.').count();
-        String packagePath = testClass.getPackage().getName();
-        String path;
-        if(dots == 1){
-            if(composeResource.endsWith("." + FILE_EXTENSION_JSON)){
-                path = "/".concat(replace(packagePath, ".", "/").concat("/").concat(composeResource));
-            }else{
-                throw new FileInvalidException(composeResource);
-            }
-        }else if(dots > 1){
-            path = replace(composeResource, ".", "/");
-        }else{
-            path = "/".concat(replace(packagePath, ".", "/").concat("/").concat(composeResource).concat(FILE_EXTENSION_JSON));
-        }
+    private void importResource(Map<String, List<Map<String, Object>>> resourceMap) {
+        resourceMap.entrySet().forEach(this::processEntityGroup);
+    }
 
-        return new File(testClass.getResource(path).getPath());
+    private void processEntityGroup(Map.Entry<String, List<Map<String, Object>>> entityGroup) {
+        String key = entityGroup.getKey();
+        List<Map<String, Object>> entitiesResource = entityGroup.getValue();
+
+        for(Map<String, Object> entityResource : entitiesResource) {
+            importEntity(key, entityResource);
+        }
+        entityManager.flush();
+    }
+
+    private void importEntity(String key, Map<String, Object> entityResource) {
+        String className = (String) entityResource.get("_class");
+        entityResource.remove("_class");
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
+        try {
+            Object entity = objectMapper.convertValue(entityResource, getEntityClass(className));
+            CrudRepository repository = (CrudRepository) appContext.getBean(key.concat("Repository"));
+            repository.save(entity);
+        } catch (ClassNotFoundException e) {
+            throw new GenericComposeException();
+        }
     }
 
 }
