@@ -43,5 +43,5 @@ ALTER TABLE user_service.user_group_users
    ADD CONSTRAINT fk_group_users_user_groups FOREIGN KEY (user_groups_tid)
        REFERENCES user_service.user_group;
 
-CREATE UNIQUE INDEX user_email_case_insensitive_unique
+CREATE INDEX user_email_case_insensitive_unique
    ON user_service."user" (lower (email));

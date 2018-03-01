@@ -19,6 +19,20 @@
         "name": "Pablo",
         "password": "somePass",
         "tenantId": "550e8400-e29b-41d4-a716-446655440000"
+      },
+      {
+        "id": "550e8400-e29b-41d4-a716-446655440001",
+        "email": "prperiscal1@gmail.com",
+        "name": "Pablo1",
+        "password": "somePass",
+        "tenantId": "550e8400-e29b-41d4-a716-446655440000"
+      },
+      {
+        "id": "550e8400-e29b-41d4-a716-446655440002",
+        "email": "prperiscal1@gmail.com",
+        "name": "Pablo tenant2",
+        "password": "somePass",
+        "tenantId": "550e8400-e29b-41d4-a716-446655440001"
       }
     ],
     "userGroup": [
@@ -27,7 +41,8 @@
         "name": "group1",
         "tenantId": "550e8400-e29b-41d4-a716-446655440000",
         "@users": [
-          "user@550e8400-e29b-41d4-a716-446655440000"
+          "user@550e8400-e29b-41d4-a716-446655440000",
+          "user@550e8400-e29b-41d4-a716-446655440001"
         ]
       },
       {
@@ -35,15 +50,15 @@
         "name": "group2",
         "tenantId": "550e8400-e29b-41d4-a716-446655440000",
         "@users": [
-          "user@550e8400-e29b-41d4-a716-446655440000"
+          "user@550e8400-e29b-41d4-a716-446655440001"
         ]
       },
       {
         "id": "550e8400-e29b-41d4-a716-446655440003",
         "name": "group3",
-        "tenantId": "550e8400-e29b-41d4-a716-446655440000",
+        "tenantId": "550e8400-e29b-41d4-a716-446655440001",
         "@users": [
-          "user@550e8400-e29b-41d4-a716-446655440000"
+          "user@550e8400-e29b-41d4-a716-446655440002"
         ]
       }
     ]
