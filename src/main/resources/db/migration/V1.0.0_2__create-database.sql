@@ -1,19 +1,19 @@
 CREATE TABLE user_service."user" (
    tid           int8 NOT NULL,
-   id            varchar (40) NOT NULL,
+   id            uuid NOT NULL,
    email         varchar (255) NOT NULL,
    name          varchar (255) NOT NULL,
    password      varchar (255) NOT NULL,
    role          varchar (127) NOT NULL,
-   tenant_id     varchar (40) NOT NULL,
+   tenant_id     uuid NOT NULL,
    PRIMARY KEY (tid)
 );
 
 CREATE TABLE user_service.user_group (
    tid         int8 NOT NULL,
-   id          varchar (40) NOT NULL,
+   id          uuid NOT NULL,
    name        varchar (127) NOT NULL,
-   tenant_id   varchar (40) NOT NULL,
+   tenant_id   uuid NOT NULL,
    PRIMARY KEY (tid)
 );
 
@@ -43,5 +43,5 @@ ALTER TABLE user_service.user_group_users
    ADD CONSTRAINT fk_group_users_user_groups FOREIGN KEY (user_groups_tid)
        REFERENCES user_service.user_group;
 
-CREATE UNIQUE INDEX user_email_case_insensitive_unique
+CREATE INDEX user_email_case_insensitive_unique
    ON user_service."user" (lower (email));
