@@ -1,9 +1,5 @@
 package com.mytasks.user.facility;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.stream.Collectors;
-
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.convert.ConversionService;
@@ -11,6 +7,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
+
+import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author <a href="mailto:prperiscal@gmail.com">Pablo Rey Periscal</a>
@@ -24,13 +24,13 @@ public class ConverterFacility {
     private ConversionService conversionService;
 
     /**
-     * <p>Convert the given sources to the projection specified.
+     * <p>Converts the given sources to the projection specified.
      *
      * @param page       {@link Page} of objects to convert
      * @param pageable   page properties
      * @param targetType projection type
      *
-     * @return {@link List} with all converted objects
+     * @return {@link Page} with all converted objects
      * @since 1.0.0
      */
     public <S, T> Page<T> convert(Page<? extends S> page, Pageable pageable, Class<T> targetType) {
@@ -39,13 +39,20 @@ public class ConverterFacility {
     }
 
 
-    private <S, T> List<T> convert(Collection<? extends S> sources, Class<T> targetType) {
+    /**
+     * <p>Converts the given sources to the projection specified.
+     *
+     * @param sources objects to convert
+     * @param targetType projection type
+     * @return {@link List} with all converted objects
+     */
+    public <S, T> List<T> convert(Collection<? extends S> sources, Class<T> targetType) {
         return sources.stream().map((source) -> conversionService.convert(source, targetType))
                       .collect(Collectors.toList());
     }
 
     /**
-     * <p>Convert the given source to the projection specified.
+     * <p>Converts the given source to the projection specified.
      *
      * @param source     Object to convert
      * @param targetType Projection to convert to

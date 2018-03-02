@@ -1,13 +1,5 @@
 package com.mytasks.user.repository.specification;
 
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
-import javax.persistence.criteria.SetJoin;
-import java.util.List;
-import java.util.UUID;
-
 import com.google.common.collect.Lists;
 import com.mytasks.user.common.Validate;
 import com.mytasks.user.model.User;
@@ -18,6 +10,14 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.lang.Nullable;
+
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+import javax.persistence.criteria.SetJoin;
+import java.util.List;
+import java.util.UUID;
 
 /**
  * <p>Specification to search user filtering by email and group name.
@@ -32,7 +32,7 @@ public class UserByTenantIdAndUserGroupName implements Specification<User> {
     private final UUID tenantId;
 
     @NonNull
-    private final String userGroupName;
+    private final UUID userGroupId;
 
     @Nullable
     @Override
@@ -45,7 +45,7 @@ public class UserByTenantIdAndUserGroupName implements Specification<User> {
         predicates.add(criteriaBuilder.equal(root.get(User_.tenantId), tenantId));
 
         SetJoin<User, UserGroup> userGroups = root.join(User_.userGroups);
-        predicates.add(criteriaBuilder.equal(userGroups.get(UserGroup_.id), userGroupName));
+        predicates.add(criteriaBuilder.equal(userGroups.get(UserGroup_.id), userGroupId));
 
         return criteriaBuilder.and(predicates.toArray(new Predicate[]{}));
     }

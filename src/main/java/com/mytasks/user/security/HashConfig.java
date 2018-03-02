@@ -6,7 +6,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 /**
- * Bean definition for hashing passwords.
+ * <p>Bean definition for hashing passwords.
  *
  * @author <a href="mailto:prperiscal@gmail.com">Pablo Rey Periscal</a>
  * @since 1.0.0

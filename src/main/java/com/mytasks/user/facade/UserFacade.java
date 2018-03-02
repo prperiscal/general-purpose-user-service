@@ -1,8 +1,6 @@
 package com.mytasks.user.facade;
 
-import java.util.Optional;
-import java.util.UUID;
-
+import com.google.common.collect.Sets;
 import com.mytasks.user.common.Validate;
 import com.mytasks.user.exception.UserNotFoundException;
 import com.mytasks.user.facility.ConverterFacility;
@@ -10,7 +8,6 @@ import com.mytasks.user.model.User;
 import com.mytasks.user.projection.UserBase;
 import com.mytasks.user.rest.input.UserInsert;
 import com.mytasks.user.rest.input.UserUpdate;
-import com.mytasks.user.security.PasswordEncode;
 import com.mytasks.user.service.UserService;
 import com.prperiscal.spring.resolver.projection.base.Projection;
 import com.prperiscal.spring.resolver.projection.base.ProjectionResolver;
@@ -20,8 +17,13 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Optional;
+import java.util.Set;
+import java.util.UUID;
 
 /**
  * <p>Facade to hide {@link UserService} logic.
@@ -39,7 +41,7 @@ public class UserFacade {
     private final UserService userService;
 
     @NonNull
-    private final PasswordEncode passwordEncode;
+    private final PasswordEncoder passwordEncoder;
 
     @NonNull
     private final ApplicationEventPublisher applicationEventPublisher;
@@ -101,7 +103,6 @@ public class UserFacade {
      * <p>Retrieves {@link User} with the given email.
      *
      * @param email          user email
-     * @param pageable       page parameters
      * @param projectionName the name of the projection the {@link User} shall be converted to
      *
      * @return {@link Page<Projection>} with the users
@@ -109,14 +110,13 @@ public class UserFacade {
      * @throws DataAccessException      if database access fails
      * @since 1.0.0
      */
-    public Page<? extends Projection> findByEmail(String email, String projectionName, Pageable pageable) {
-        Validate.notEmpty(email, "email");
-        Validate.notNull(pageable, "pageable");
+    public Set<? extends Projection> findByEmail(String email, String projectionName) {
+        Validate.notNull(email, "email");
 
         final Class<? extends Projection> targetType = projectionResolver.resolve(User.class, projectionName)
                                                                          .orElse(UserBase.class);
-        Page<User> users = userService.findByEmail(email, pageable);
-        return converterFacility.convert(users, pageable, targetType);
+        Set<User> users = userService.findByEmail(email);
+        return Sets.newHashSet(converterFacility.convert(users, targetType));
     }
 
     /**
@@ -154,7 +154,7 @@ public class UserFacade {
     public Projection insert(UserInsert userInsert, String projectionName) {
         Validate.notNull(userInsert, "userInsert");
 
-        userInsert.setPassword(passwordEncode.encodePassword(userInsert.getPassword()));
+        userInsert.setPassword(passwordEncoder.encode(userInsert.getPassword()));
 
         final Class<? extends Projection> targetType = projectionResolver.resolve(User.class, projectionName)
                                                                          .orElse(UserBase.class);
@@ -193,7 +193,7 @@ public class UserFacade {
      * <p>Find {@link User} by tenant id and group id.
      *
      * @param tenantId       {@link UUID} of tenant
-     * @param userGroupName  {@link String} name of userGroup
+     * @param userGroupId  {@link UUID} name of userGroup
      * @param pageable       page parameters
      * @param projectionName the name of the projection the {@link User} shall be converted to
      *
@@ -203,15 +203,15 @@ public class UserFacade {
      * @since 1.0.0
      */
     @Transactional(readOnly = true)
-    public Page<? extends Projection> findByUserGroup(UUID tenantId, String userGroupName, String projectionName,
+    public Page<? extends Projection> findByUserGroup(UUID tenantId, UUID userGroupId, String projectionName,
                                                       Pageable pageable) {
         Validate.notNull(tenantId, "tenantId");
-        Validate.notNull(userGroupName, "userGroupName");
+        Validate.notNull(userGroupId, "userGroupId");
         Validate.notNull(pageable, "pageable");
 
         final Class<? extends Projection> targetType = projectionResolver.resolve(User.class, projectionName)
                                                                          .orElse(UserBase.class);
-        Page<User> users = userService.findByUserGroup(tenantId, userGroupName, pageable);
+        Page<User> users = userService.findByUserGroup(tenantId, userGroupId, pageable);
         return converterFacility.convert(users, pageable, targetType);
     }
 }

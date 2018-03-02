@@ -1,8 +1,5 @@
 package com.mytasks.user.service;
 
-import java.util.Optional;
-import java.util.UUID;
-
 import com.mytasks.user.common.Validate;
 import com.mytasks.user.exception.UserNotFoundException;
 import com.mytasks.user.facility.ConverterFacility;
@@ -21,6 +18,10 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+import java.util.Set;
+import java.util.UUID;
+
 /**
  * <p>Service for {@link User}. Communicates with the user repository directly.
  *
@@ -30,6 +31,8 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 @Service
 public class UserService {
+
+    //TODO: create findByTenant
 
     @NonNull
     private final UserRepository userRepository;
@@ -58,7 +61,7 @@ public class UserService {
     }
 
     /**
-     * <p>Retrieves {@link User} if exits any with the same email as the user given but concatenating "2".
+     * <p>Retrieves {@link User User(s)} belonging to same group or groups as the given user (by user id).
      *
      * @param tenantId {@link UUID} tenant
      * @param userId   {@link UUID} user
@@ -82,19 +85,17 @@ public class UserService {
      * <p>Retrieves {@link User} with the given email.
      *
      * @param email    user email
-     * @param pageable page parameters
      *
-     * @return {@link Page<User>} with the users
+     * @return {@link Set <User>} with the users
      * @throws IllegalArgumentException if email or pageable is {@code null}
      * @throws DataAccessException      if database access fails
      * @since 1.0.0
      */
     @Transactional(readOnly = true)
-    public Page<User> findByEmail(String email, Pageable pageable) {
+    public Set<User> findByEmail(String email) {
         Validate.notNull(email, "email");
-        Validate.notNull(pageable, "pageable");
 
-        return userRepository.findByEmail(email, pageable);
+        return userRepository.findByEmail(email);
     }
 
     /**
@@ -165,14 +166,13 @@ public class UserService {
                             .orElseThrow(() -> new UserNotFoundException(tenantId.toString(), userId.toString()));
 
         Optional.ofNullable(userUpdate.getName()).ifPresent(user::setName);
-        Optional.ofNullable(userUpdate.getEmail()).ifPresent(user::setEmail);
         Optional.ofNullable(userUpdate.getRole()).ifPresent(user::setRole);
         return userRepository.save(user);
     }
 
     /**
      * @param tenantId      {@link UUID} of tenant
-     * @param userGroupName {@link String} name of userGroup
+     * @param userGroupId {@link UUID} name of userGroup
      * @param pageable      page parameters
      *
      * @return {@link Page<User>} with the users
@@ -181,12 +181,12 @@ public class UserService {
      * @since 1.0.0
      */
     @Transactional(readOnly = true)
-    public Page<User> findByUserGroup(UUID tenantId, String userGroupName, Pageable pageable) {
+    public Page<User> findByUserGroup(UUID tenantId, UUID userGroupId, Pageable pageable) {
         Validate.notNull(tenantId, "tenantId");
-        Validate.notNull(userGroupName, "userGroupName");
+        Validate.notNull(userGroupId, "userGroupId");
         Validate.notNull(pageable, "pageable");
 
-        Specification<User> specification = new UserByTenantIdAndUserGroupName(tenantId, userGroupName);
+        Specification<User> specification = new UserByTenantIdAndUserGroupName(tenantId, userGroupId);
 
         return userRepository.findAll(specification, pageable);
     }

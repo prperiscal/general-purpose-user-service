@@ -1,17 +1,5 @@
 package com.mytasks.user.rest;
 
-import static org.springframework.http.HttpStatus.NOT_FOUND;
-import static org.springframework.http.HttpStatus.NO_CONTENT;
-import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8_VALUE;
-import static org.springframework.web.bind.annotation.RequestMethod.DELETE;
-import static org.springframework.web.bind.annotation.RequestMethod.GET;
-import static org.springframework.web.bind.annotation.RequestMethod.POST;
-import static org.springframework.web.bind.annotation.RequestMethod.PUT;
-
-import javax.validation.Valid;
-import java.util.Optional;
-import java.util.UUID;
-
 import com.mytasks.user.exception.UserNotFoundException;
 import com.mytasks.user.facade.UserFacade;
 import com.mytasks.user.model.User;
@@ -31,6 +19,19 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+
+import javax.validation.Valid;
+import java.util.Optional;
+import java.util.Set;
+import java.util.UUID;
+
+import static org.springframework.http.HttpStatus.NOT_FOUND;
+import static org.springframework.http.HttpStatus.NO_CONTENT;
+import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8_VALUE;
+import static org.springframework.web.bind.annotation.RequestMethod.DELETE;
+import static org.springframework.web.bind.annotation.RequestMethod.GET;
+import static org.springframework.web.bind.annotation.RequestMethod.POST;
+import static org.springframework.web.bind.annotation.RequestMethod.PUT;
 
 /**
  * <p>Rest controller for {@link User Users}.
@@ -89,7 +90,6 @@ public class UserCtrl implements UserBinding {
      * <p>Retrieves {@link User} with the given email.
      *
      * @param email          user email
-     * @param pageable       page parameters
      * @param projectionName the name of the projection the {@link User} shall be converted to
      *
      * @return {@link Page<Projection>} with the users
@@ -98,11 +98,10 @@ public class UserCtrl implements UserBinding {
      * @since 1.0.0
      */
     @RequestMapping(method = GET, path = FIND_BY_EMAIL_PATH, produces = APPLICATION_JSON_UTF8_VALUE)
-    public Page<? extends Projection> findByEmail(@RequestParam(required = false, name = "email") String email,
-                                                  @RequestParam(name = PROJECTION_NAME_PARAM, required = false) String projectionName,
-                                                  Pageable pageable) {
+    public Set<? extends Projection> findByEmail(@RequestParam(required = false, name = "email") String email,
+                                                  @RequestParam(name = PROJECTION_NAME_PARAM, required = false) String projectionName) {
         //If this pageable sounds strange to you, take a look at https://docs.spring.io/spring-data/jpa/docs/1.8.x/reference/html/#core.web
-        return userFacade.findByEmail(email, projectionName, pageable);
+        return userFacade.findByEmail(email, projectionName);
     }
 
     /**
@@ -166,7 +165,7 @@ public class UserCtrl implements UserBinding {
      * <p>Find {@link User} by group name.
      *
      * @param tenantId       {@link UUID} of tenant id
-     * @param groupName      {@link UUID} of user
+     * @param groupId      {@link UUID} of userGroup
      * @param projectionName the name of the projection the {@link User} shall be converted to
      *
      * @return {@link User} updated with Status 201
@@ -175,10 +174,10 @@ public class UserCtrl implements UserBinding {
      * @since 1.0.0
      */
     @RequestMapping(method = PUT, path = FIND_USER_GROUPS_PATH, consumes = APPLICATION_JSON_UTF8_VALUE, produces = APPLICATION_JSON_UTF8_VALUE)
-    public Page<? extends Projection> findByGroupName(@PathVariable UUID tenantId, @PathVariable String groupName,
+    public Page<? extends Projection> findByGroupName(@PathVariable UUID tenantId, @PathVariable UUID groupId,
                                                       @RequestParam(name = PROJECTION_NAME_PARAM, required = false) String projectionName,
                                                       Pageable pageable) {
         //If this pageable sounds strange to you, take a look at https://docs.spring.io/spring-data/jpa/docs/1.8.x/reference/html/#core.web
-        return userFacade.findByUserGroup(tenantId, groupName, projectionName, pageable);
+        return userFacade.findByUserGroup(tenantId, groupId, projectionName, pageable);
     }
 }

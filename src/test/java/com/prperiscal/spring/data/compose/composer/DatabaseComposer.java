@@ -1,24 +1,9 @@
 package com.prperiscal.spring.data.compose.composer;
 
-import static com.prperiscal.spring.data.compose.composer.ComposerUtils.getEntityClass;
-import static com.prperiscal.spring.data.compose.composer.ComposerUtils.getGetter;
-import static com.prperiscal.spring.data.compose.composer.ComposerUtils.getResource;
-
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.net.URL;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-import java.util.stream.Collectors;
-
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Maps;
+import com.mytasks.user.common.Validate;
 import com.prperiscal.spring.data.compose.exception.GenericComposeException;
 import com.prperiscal.spring.data.compose.model.ComposeData;
 import com.prperiscal.spring.data.compose.model.ComposeMetaData;
@@ -30,6 +15,23 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.net.URL;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import static com.prperiscal.spring.data.compose.composer.ComposerUtils.getEntityClass;
+import static com.prperiscal.spring.data.compose.composer.ComposerUtils.getGetter;
+import static com.prperiscal.spring.data.compose.composer.ComposerUtils.getResource;
 
 /**
  * @author <a href="mailto:prperiscal@gmail.com">Pablo Rey Periscal</a>
@@ -50,7 +52,12 @@ public class DatabaseComposer {
     @Modifying
     @Transactional
     public void compose(Class<?> testClass, String composeResource) throws IOException {
+        Validate.notNull(composeResource, "composeResource");
         URL resourcePath = getResource(testClass, composeResource);
+
+        if(resourcePath == null){
+            throw new FileNotFoundException(String.format("Data compose could not load '%s'",composeResource));
+        }
 
         ObjectMapper objectMapper = new ObjectMapper();
         ComposeData composeData = objectMapper.readValue(resourcePath, ComposeData.class);
