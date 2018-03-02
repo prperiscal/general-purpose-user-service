@@ -2,6 +2,7 @@ package com.mytasks.user.projection;
 
 import java.util.UUID;
 
+import com.mytasks.user.model.Role;
 import com.mytasks.user.model.User;
 import com.prperiscal.spring.resolver.projection.base.Projection;
 import lombok.Data;
@@ -24,6 +25,6 @@ public class UserBase implements Projection, BaseProperties {
     private UUID tenantId;
     private String email;
     private String name;
-    private String role;
+    private Role role;
 
 }

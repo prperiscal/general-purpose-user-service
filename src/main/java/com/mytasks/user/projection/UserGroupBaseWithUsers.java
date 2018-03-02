@@ -21,5 +21,5 @@ public class UserGroupBaseWithUsers extends UserGroupBase {
 
     public final static String PROP_USERS = "users";
 
-    private Set<User> users = Sets.newHashSet();
+    private Set<UserBase> users = Sets.newHashSet();
 }

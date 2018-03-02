@@ -27,7 +27,7 @@ public class User2UserBase implements Converter<User, UserBase> {
         userBase.setTenantId(user.getTenantId());
         userBase.setEmail(user.getEmail());
         userBase.setName(user.getName());
-        userBase.setRole(user.getRole().name());
+        userBase.setRole(user.getRole());
         return userBase;
     }
 
