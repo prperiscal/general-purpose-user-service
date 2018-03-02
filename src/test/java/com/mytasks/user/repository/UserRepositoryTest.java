@@ -1,5 +1,12 @@
 package com.mytasks.user.repository;
 
+import static com.google.common.collect.Sets.newHashSet;
+import static com.mytasks.user.CommonTestVars.PROFILE;
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.util.Set;
+import java.util.UUID;
+
 import com.mytasks.user.ServiceApplication;
 import com.mytasks.user.model.Role;
 import com.mytasks.user.model.User;
@@ -13,13 +20,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import java.util.Set;
-import java.util.UUID;
-
-import static com.google.common.collect.Sets.newHashSet;
-import static com.mytasks.user.CommonTestVars.PROFILE;
-import static org.assertj.core.api.Assertions.assertThat;
-
 @ActiveProfiles(value = PROFILE)
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = ServiceApplication.class)
@@ -30,8 +30,8 @@ public class UserRepositoryTest {
     private UserRepository userRepository;
 
     @Test
-    @DataComposeResource("baseUserUserGroup.json")
-    public void findByTenantIdAndId() {
+    @DataComposeResource("BaseUserUserGroup.json")
+    public void findByTenantIdAndIdTest() {
         UUID tenant = UUID.fromString("550e8400-e29b-41d4-a716-446655440000");
         UUID userId = UUID.fromString("550e8400-e29b-41d4-a716-446655440000");
 
@@ -45,8 +45,8 @@ public class UserRepositoryTest {
     }
 
     @Test
-    @DataComposeResource("baseUserUserGroup.json")
-    public void findByEmail() {
+    @DataComposeResource("BaseUserUserGroup.json")
+    public void findByEmailTest() {
         String email = "prperiscal1@gmail.com";
 
         Set<User> users = userRepository.findByEmail(email);
@@ -57,8 +57,8 @@ public class UserRepositoryTest {
     }
 
     @Test
-    @DataComposeResource("baseUserUserGroup.json")
-    public void deleteByTenantIdAndId() {
+    @DataComposeResource("BaseUserUserGroup.json")
+    public void deleteByTenantIdAndIdTest() {
         UUID tenant = UUID.fromString("550e8400-e29b-41d4-a716-446655440000");
         UUID userId = UUID.fromString("550e8400-e29b-41d4-a716-446655440000");
 
@@ -67,7 +67,8 @@ public class UserRepositoryTest {
     }
 
     @Test
-    public void findByTenantIdAndIdIsIn() {
+    @DataComposeResource("BaseUserUserGroup.json")
+    public void findByTenantIdAndIdIsInTest() {
         UUID tenant = UUID.fromString("550e8400-e29b-41d4-a716-446655440000");
         UUID userId = UUID.fromString("550e8400-e29b-41d4-a716-446655440000");
         UUID userId1 = UUID.fromString("550e8400-e29b-41d4-a716-446655440001");

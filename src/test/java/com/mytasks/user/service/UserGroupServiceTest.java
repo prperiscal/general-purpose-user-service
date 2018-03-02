@@ -1,5 +1,11 @@
 package com.mytasks.user.service;
 
+import static com.google.common.collect.Sets.newHashSet;
+import static com.mytasks.user.CommonTestVars.PROFILE;
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.util.UUID;
+
 import com.mytasks.user.ServiceApplication;
 import com.mytasks.user.model.User;
 import com.mytasks.user.model.UserGroup;
@@ -16,36 +22,28 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import java.util.UUID;
-
-import static com.google.common.collect.Sets.newHashSet;
-import static com.mytasks.user.CommonTestVars.PROFILE;
-import static org.assertj.core.api.Assertions.assertThat;
-
 @ActiveProfiles(value = PROFILE)
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = ServiceApplication.class)
 @SpringDataCompose
 public class UserGroupServiceTest {
 
-    @Setter(onMethod = @__({ @Autowired}))
+    @Setter(onMethod = @__({@Autowired}))
     private UserGroupService userGroupService;
 
-
-    @Setter(onMethod = @__({ @Autowired}))
+    @Setter(onMethod = @__({@Autowired}))
     private UserService userService;
-
 
     @Test
     @DataComposeResource("UsersWithGroups.json")
-    public void findOne() {
+    public void findOneTest() {
         UUID tenantOne = UUID.fromString("550e8400-e29b-41d4-a716-446655440000");
         UUID userGroupOne = UUID.fromString("550e8400-e29b-41d4-a716-446655440001");
         UUID pablo = UUID.fromString("550e8400-e29b-41d4-a716-446655440000");
         UUID juan = UUID.fromString("550e8400-e29b-41d4-a716-446655440001");
         UUID pedro = UUID.fromString("550e8400-e29b-41d4-a716-446655440002");
 
-        UserGroup userGroup = userGroupService.findOne(tenantOne,userGroupOne);
+        UserGroup userGroup = userGroupService.findOne(tenantOne, userGroupOne);
 
         assertThat(userGroup).isNotNull();
         assertThat(userGroup.getName()).isEqualTo("group1");
@@ -54,12 +52,12 @@ public class UserGroupServiceTest {
 
     @Test
     @DataComposeResource("UsersWithGroups.json")
-    public void delete() {
+    public void deleteTest() {
         UUID tenantOne = UUID.fromString("550e8400-e29b-41d4-a716-446655440000");
         UUID userGroupOne = UUID.fromString("550e8400-e29b-41d4-a716-446655440001");
         UUID pablo = UUID.fromString("550e8400-e29b-41d4-a716-446655440000");
 
-        Boolean deleted = userGroupService.delete(tenantOne,userGroupOne);
+        Boolean deleted = userGroupService.delete(tenantOne, userGroupOne);
         assertThat(deleted).isTrue();
 
         UserGroup userGroup = userGroupService.findOne(tenantOne, userGroupOne);
@@ -70,7 +68,7 @@ public class UserGroupServiceTest {
     }
 
     @Test
-    public void insert() {
+    public void insertTest() {
         UUID tenant = UUID.fromString("550e8400-e29b-41d4-a716-446655440000");
         String userGroupName = "insertedUserGroup";
 
@@ -85,7 +83,7 @@ public class UserGroupServiceTest {
 
     @Test
     @DataComposeResource("UsersWithGroups.json")
-    public void addUsers() {
+    public void addUsersTest() {
         UUID tenantOne = UUID.fromString("550e8400-e29b-41d4-a716-446655440000");
         UUID userGroupTwo = UUID.fromString("550e8400-e29b-41d4-a716-446655440002");
         UUID raquel = UUID.fromString("550e8400-e29b-41d4-a716-446655440004");
@@ -101,7 +99,7 @@ public class UserGroupServiceTest {
 
     @Test
     @DataComposeResource("UsersWithGroups.json")
-    public void removeUsers() {
+    public void removeUsersTest() {
         UUID tenantOne = UUID.fromString("550e8400-e29b-41d4-a716-446655440000");
         UUID userGroupTwo = UUID.fromString("550e8400-e29b-41d4-a716-446655440002");
         UUID juan = UUID.fromString("550e8400-e29b-41d4-a716-446655440001");

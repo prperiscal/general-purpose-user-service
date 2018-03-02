@@ -1,5 +1,11 @@
 package com.mytasks.user.repository;
 
+import static com.google.common.collect.Sets.newHashSet;
+import static com.mytasks.user.CommonTestVars.PROFILE;
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.util.UUID;
+
 import com.mytasks.user.ServiceApplication;
 import com.mytasks.user.model.User;
 import com.mytasks.user.model.UserGroup;
@@ -13,12 +19,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import java.util.UUID;
-
-import static com.google.common.collect.Sets.newHashSet;
-import static com.mytasks.user.CommonTestVars.PROFILE;
-import static org.assertj.core.api.Assertions.assertThat;
-
 @ActiveProfiles(value = PROFILE)
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = ServiceApplication.class)
@@ -29,8 +29,8 @@ public class UserGroupRepositoryTest {
     private UserGroupRepository userGroupRepository;
 
     @Test
-    @DataComposeResource("baseUserUserGroup.json")
-    public void findByTenantIdAndId() {
+    @DataComposeResource("BaseUserUserGroup.json")
+    public void findByTenantIdAndIdTest() {
         UUID tenant = UUID.fromString("550e8400-e29b-41d4-a716-446655440000");
         UUID userGroupId = UUID.fromString("550e8400-e29b-41d4-a716-446655440001");
 
@@ -42,7 +42,8 @@ public class UserGroupRepositoryTest {
     }
 
     @Test
-    public void deleteByTenantIdAndId() {
+    @DataComposeResource("BaseUserUserGroup.json")
+    public void deleteByTenantIdAndIdTest() {
         UUID tenant = UUID.fromString("550e8400-e29b-41d4-a716-446655440000");
         UUID userGroupId = UUID.fromString("550e8400-e29b-41d4-a716-446655440001");
 
