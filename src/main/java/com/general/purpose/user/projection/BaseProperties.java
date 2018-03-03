@@ -9,7 +9,6 @@ package com.general.purpose.user.projection;
 interface BaseProperties {
 
     String PROP_ID = "id";
-    String PROP_TID = "tid";
     String PROP_TENANT_ID = "tenantId";
 
 }

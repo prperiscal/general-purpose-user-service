@@ -17,7 +17,6 @@ public class UserGroupBase implements Projection, BaseProperties {
 
     public final static String PROP_GROUP_NAME = "name";
 
-    private Long tid;
     private UUID id;
     private UUID tenantId;
     private String name;

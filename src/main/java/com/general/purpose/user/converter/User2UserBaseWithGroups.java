@@ -33,7 +33,6 @@ public class User2UserBaseWithGroups implements Converter<User, UserBaseWithGrou
         }
 
         final UserBaseWithGroups userBaseWithGroups = new UserBaseWithGroups();
-        userBaseWithGroups.setTid(user.getTid());
         userBaseWithGroups.setId(user.getId());
         userBaseWithGroups.setTenantId(user.getTenantId());
         userBaseWithGroups.setEmail(user.getEmail());

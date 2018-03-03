@@ -22,7 +22,6 @@ public class UserGroup2UserGroupBase implements Converter<UserGroup, UserGroupBa
         }
 
         final UserGroupBase userGroupBase = new UserGroupBase();
-        userGroupBase.setTid(userGroup.getTid());
         userGroupBase.setId(userGroup.getId());
         userGroupBase.setTenantId(userGroup.getTenantId());
         userGroupBase.setName(userGroup.getName());

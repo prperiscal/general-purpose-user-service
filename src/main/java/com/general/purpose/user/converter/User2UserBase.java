@@ -22,7 +22,6 @@ public class User2UserBase implements Converter<User, UserBase> {
         }
 
         final UserBase userBase = new UserBase();
-        userBase.setTid(user.getTid());
         userBase.setId(user.getId());
         userBase.setTenantId(user.getTenantId());
         userBase.setEmail(user.getEmail());

@@ -20,7 +20,6 @@ public class UserBase implements Projection, BaseProperties {
     public final static String PROP_NAME = "name";
     public final static String PROP_ROLE = "role";
 
-    private Long tid;
     private UUID id;
     private UUID tenantId;
     private String email;
