@@ -1,5 +1,7 @@
 package com.general.purpose.user.common;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.util.Map;
 import java.util.Set;
 
@@ -13,6 +15,7 @@ public class ValidateTest {
     public void notNullStringTest() {
         Object object = "notNull";
         Validate.notNull(object, "string");
+        assertThat(object).isEqualTo("notNull");
     }
 
     @Test(expected = IllegalArgumentException.class)
