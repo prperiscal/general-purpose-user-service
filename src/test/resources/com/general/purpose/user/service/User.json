@@ -1,0 +1,20 @@
+{
+  "metadata": {
+    "user": {
+      "_class": "com.general.purpose.user.model.User",
+      "repository": "userRepository",
+      "id": "id"
+    }
+  },
+  "entities": {
+    "user": [
+      {
+        "id": "550e8400-e29b-41d4-a716-446655440002",
+        "email": "prperiscal1@gmail.com",
+        "name": "Pablo tenant2",
+        "password": "somePass",
+        "tenantId": "550e8400-e29b-41d4-a716-446655440001"
+      }
+    ]
+  }
+}
