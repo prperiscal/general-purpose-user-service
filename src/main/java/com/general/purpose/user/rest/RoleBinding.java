@@ -10,7 +10,7 @@ interface RoleBinding {
 
     String ROLES = "roles";
 
-    String BASE_PATH = "api/" + ROLES;
+    String BASE_PATH = "/api/" + ROLES;
     String FIND_ALL_PATH = BASE_PATH + "/";
 
 }

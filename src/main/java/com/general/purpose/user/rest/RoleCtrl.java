@@ -29,7 +29,7 @@ public class RoleCtrl implements RoleBinding {
     /**
      * Retrieve all {@link Role} entities
      *
-     * @return Set of {@link Set< RoleBase > roles}
+     * @return Set of {@link Set<RoleBase> roles}
      * @since 1.0.0
      */
     @RequestMapping(method = GET, path = FIND_ALL_PATH, produces = APPLICATION_JSON_UTF8_VALUE)
