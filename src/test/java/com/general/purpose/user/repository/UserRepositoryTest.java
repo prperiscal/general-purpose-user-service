@@ -13,7 +13,6 @@ import com.general.purpose.user.model.User;
 import com.prperiscal.spring.data.compose.DataComposeResource;
 import com.prperiscal.spring.data.compose.SpringDataCompose;
 import lombok.Setter;
-import org.assertj.core.api.Assertions;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,7 +41,7 @@ public class UserRepositoryTest {
         assertThat(user.getName()).isEqualTo("Pablo");
         assertThat(user.getRole()).isEqualTo(Role.WORKER);
         assertThat(user.getPassword()).isEqualTo("somePass");
-        Assertions.assertThat(user.getUserGroups()).isNotEmpty();
+        assertThat(user.getUserGroups()).isNotEmpty();
     }
 
     @Test

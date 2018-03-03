@@ -1,3 +1,4 @@
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/89f81045a7da4e259283a769d94c95bb)](https://www.codacy.com/app/prperiscal/general-purpose-user-service?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=prperiscal/general-purpose-user-service&amp;utm_campaign=Badge_Grade)
 # general-purpose-environment
 
 General purpose micro-services and architecture provide an extended and robust base from where a new project

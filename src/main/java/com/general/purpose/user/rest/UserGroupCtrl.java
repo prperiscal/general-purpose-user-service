@@ -123,7 +123,7 @@ public class UserGroupCtrl implements UserGroupBinding {
     public ResponseEntity<Object> addUser(@PathVariable UUID tenantId, @PathVariable UUID userGroupId,
                                           @RequestBody @Valid IncludeUsers includeUsers) {
         userGroupFacade.addUsers(tenantId, userGroupId, includeUsers);
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        return ResponseEntity.status(NO_CONTENT).build();
     }
 
     /**
@@ -142,6 +142,6 @@ public class UserGroupCtrl implements UserGroupBinding {
     public ResponseEntity<Object> removeUser(@PathVariable UUID tenantId, @PathVariable UUID userGroupId,
                                              @RequestBody @Valid RemoveUsers removeUsers) {
         userGroupFacade.removeUsers(tenantId, userGroupId, removeUsers);
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        return ResponseEntity.status(NO_CONTENT).build();
     }
 }

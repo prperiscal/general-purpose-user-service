@@ -9,4 +9,7 @@ cache:
 services:
 - docker
 
-script: cp .travis.settings.xml $HOME/.m2/settings.xml && mvn dockerfile:build dockerfile:push
+script: cp .travis.settings.xml $HOME/.m2/settings.xml && mvn dockerfile:build dockerfile:push cobertura:cobertura
+
+after_success:
+  - bash <(curl -s https://codecov.io/bash)
