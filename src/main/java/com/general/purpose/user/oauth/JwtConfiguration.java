@@ -3,6 +3,7 @@ package com.general.purpose.user.oauth;
 import java.io.IOException;
 
 import com.general.purpose.user.oauth.converter.UserAuthenticationConverter;
+import com.general.purpose.user.oauth.exception.PublicCertificateException;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
@@ -29,7 +30,7 @@ public class JwtConfiguration {
         try {
             publicKey = new String(FileCopyUtils.copyToByteArray(resource.getInputStream()));
         } catch (final IOException e) {
-            throw new RuntimeException("Error during reading public certificate file", e);
+            throw new PublicCertificateException("Error during reading public certificate file", e);
         }
         converter.setVerifierKey(publicKey);
         return converter;

@@ -27,8 +27,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -108,7 +106,6 @@ public class UserCtrl implements UserBinding {
     @RequestMapping(method = GET, path = FIND_BY_EMAIL_PATH, produces = APPLICATION_JSON_UTF8_VALUE)
     public Set<? extends Projection> findByEmail(@RequestParam(required = false, name = "email") String email,
                                                  @RequestParam(name = PROJECTION_NAME_PARAM, required = false) String projectionName) {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         return userFacade.findByEmail(email, projectionName);
     }
 
