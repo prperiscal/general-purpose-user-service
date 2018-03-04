@@ -12,10 +12,10 @@ public class HashConfigTest {
         HashConfig hashConfig = new HashConfig();
         PasswordEncoder passwordEncoder = hashConfig.passwordEncoder();
 
-        String encodedPassword = passwordEncoder.encode("test");
-        assertThat(encodedPassword).isNotEqualTo("test");
+        String encodedPassword = passwordEncoder.encode("password");
+        assertThat(encodedPassword).isNotEqualTo("password");
 
-        assertThat(passwordEncoder.matches("test", encodedPassword));
+        assertThat(passwordEncoder.matches("password", encodedPassword));
     }
 
 }
