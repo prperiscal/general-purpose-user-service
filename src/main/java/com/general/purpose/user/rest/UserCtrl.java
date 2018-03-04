@@ -46,6 +46,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class UserCtrl implements UserBinding {
 
+    private static final String PREAUTHORIZE_PASSWORD_PROJECTION_ONLY_ON_CLIENTS = "@clientMatchingForProjectionEvaluator.evaluate(#projectionName,authentication)";
+
     @NonNull
     private final UserFacade userFacade;
 
@@ -62,6 +64,7 @@ public class UserCtrl implements UserBinding {
      * @throws IllegalArgumentException if any parameter is invalid, like unmatched uuid format for ids
      * @since 1.0.0
      */
+    @PreAuthorize(PREAUTHORIZE_PASSWORD_PROJECTION_ONLY_ON_CLIENTS)
     @RequestMapping(method = GET, path = FIND_ONE_PATH, produces = APPLICATION_JSON_UTF8_VALUE)
     public Projection findOne(@PathVariable UUID tenantId, @PathVariable UUID userId,
                               @RequestParam(name = PROJECTION_NAME_PARAM, required = false) String projectionName) {
@@ -82,6 +85,7 @@ public class UserCtrl implements UserBinding {
      * @throws IllegalArgumentException if any parameter is invalid, like unmatched uuid format for ids
      * @since 1.0.0
      */
+    @PreAuthorize(PREAUTHORIZE_PASSWORD_PROJECTION_ONLY_ON_CLIENTS)
     @RequestMapping(method = GET, path = FIND_GROUP_MATES_PATH, produces = APPLICATION_JSON_UTF8_VALUE)
     public Page<? extends Projection> findGroupMates(@PathVariable UUID tenantId, @PathVariable UUID userId,
                                                      @RequestParam(name = PROJECTION_NAME_PARAM, required = false) String projectionName,
@@ -100,7 +104,7 @@ public class UserCtrl implements UserBinding {
      * @throws DataAccessException  if database access fails
      * @since 1.0.0
      */
-    @PreAuthorize("@clientMatchingForProjectionEvaluator.evaluate(#projectionName,authentication)")
+    @PreAuthorize(PREAUTHORIZE_PASSWORD_PROJECTION_ONLY_ON_CLIENTS)
     @RequestMapping(method = GET, path = FIND_BY_EMAIL_PATH, produces = APPLICATION_JSON_UTF8_VALUE)
     public Set<? extends Projection> findByEmail(@RequestParam(required = false, name = "email") String email,
                                                  @RequestParam(name = PROJECTION_NAME_PARAM, required = false) String projectionName) {
@@ -158,6 +162,7 @@ public class UserCtrl implements UserBinding {
      * @throws DataAccessException if database access fails
      * @since 1.0.0
      */
+    @PreAuthorize(PREAUTHORIZE_PASSWORD_PROJECTION_ONLY_ON_CLIENTS)
     @RequestMapping(method = PUT, path = UPDATE_PATH, consumes = APPLICATION_JSON_UTF8_VALUE, produces = APPLICATION_JSON_UTF8_VALUE)
     public Projection update(@PathVariable UUID tenantId, @PathVariable UUID userId,
                              @RequestBody @Valid UserUpdate userUpdate,
