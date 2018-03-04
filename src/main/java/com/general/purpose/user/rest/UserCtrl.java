@@ -26,6 +26,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -92,15 +95,16 @@ public class UserCtrl implements UserBinding {
      * @param email          user email
      * @param projectionName the name of the projection the {@link User} shall be converted to
      *
-     * @return {@link Page<Projection>} with the users
+     * @return {@link Set<Projection>} with the users
      * @throws NullPointerException if input is {@code null}
      * @throws DataAccessException  if database access fails
      * @since 1.0.0
      */
+    @PreAuthorize("@clientMatchingForProjectionEvaluator.evaluate(#projectionName,authentication)")
     @RequestMapping(method = GET, path = FIND_BY_EMAIL_PATH, produces = APPLICATION_JSON_UTF8_VALUE)
     public Set<? extends Projection> findByEmail(@RequestParam(required = false, name = "email") String email,
                                                  @RequestParam(name = PROJECTION_NAME_PARAM, required = false) String projectionName) {
-        //If this pageable sounds strange to you, take a look at https://docs.spring.io/spring-data/jpa/docs/1.8.x/reference/html/#core.web
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         return userFacade.findByEmail(email, projectionName);
     }
 
